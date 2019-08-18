@@ -1,0 +1,580 @@
+# Module 2: Querying and Manipulating Data Using Entity Framework
+
+# Lab: Creating a Data Access Layer using Entity Framework
+
+1. Wherever a path to a file starts with *[Repository Root]*, replace it with the absolute path to the folder in which the 20487 repository resides.
+ For example, if you cloned or extracted the 20487 repository to **C:\Users\John Doe\Downloads\20487**, change the path: **[Repository Root]\AllFiles\20487D\Mod01** to **C:\Users\John Doe\Downloads\20487\AllFiles\20487D\Mod01**.
+2. Wherever *[YourInitials]* appears, replace it with your actual initials. (For example, the initials for John Doe will be jd.)
+3. Before performing the demonstration, you should allow some time for the provisioning of the different Microsoft Azure resources required for the demonstration. You should review the demonstrations before the actual class, identify the resources, and prepare them beforehand to save classroom time.
+
+
+### Exercise 1: Creating a Data Model
+
+#### Task 1: Create a class library for the data model
+
+1. Open the Command Prompt window.
+2. Create a new **ASP.NET Core Class Library** project. At the command prompt, paste the following command, and then press Enter:
+   ```bash
+    dotnet new classlib --name DAL --output [Repository Root]\Allfiles\Mod02\LabFiles\Lab1\Starter\DAL
+   ```  
+3. After the project is created, to change the directory, at the command prompt, run the following command:
+   ```bash
+    cd [Repository Root]\Allfiles\Mod02\LabFiles\Lab1\Starter\DAL
+   ```
+4. To use **Entity Framework Core**, install the following package from the command prompt:
+   ```base
+    dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version=2.1.1
+    dotnet restore
+   ```
+5. To open the project in Microsoft Visual Studio Code, at the command prompt, paste the following command:
+   ```bash
+    code .
+   ```
+6. To add a new folder named **Models**, right-click in the Explorer pane, and then select **New Folder**.
+
+#### Task 2: Create data model entities using the code-first approach
+
+1. Right-click the **Models** folder, and then select **New File**. In the box on the top, type **Traveler.cs**, and then press Enter.
+2. In **Traveler.cs**, paste the following code:
+   ```cs
+    namespace DAL.Models
+    {
+        public class Traveler
+        {
+            public int TravelerId { get; set; }
+            public string Name { get; set; }
+            public string Email {get; set; }
+        }
+    }
+   ```
+
+3. Right-click the **Models** folder, and then select **New File**. In the box on the top, type **Room.cs**, and then press Enter.
+4. In **Room.cs**, paste the following code:
+   ```cs
+    using System.Collections.Generic;
+
+    namespace DAL.Models
+    {
+        public class Room
+        {
+            public int RoomId { get; set; }
+            public int Number { get; set; }
+            public decimal Price { get; set; }
+            public bool Available { get; set; }
+            public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+
+        }
+    }
+   ```
+5. Right-click the **Models** folder, and then select **New File**. In the box on the top, type **Hotel.cs**, and then press Enter.
+6. In **Hotel.cs**, paste the following code:
+   ```cs
+    using System.Collections.Generic;
+
+    namespace DAL.Models
+    {
+        public class Hotel
+        {
+            public int HotelId { get; set; }
+            public string Name { get; set; }
+            public string Address { get; set; }
+            public ICollection<Room> Rooms { get; set; }
+        }
+    }
+   ```    
+7. Right-click the **Models** folder, and then select **New File**. In the box on the top, type **Booking.cs**, and then press Enter.
+8. In **Booking.cs**, paste the following code:
+   ```cs
+    using System;
+
+    namespace DAL.Models
+    {
+        public class Booking
+        {
+            public int BookingId { get; set; }
+            public Room Room { get; set; }
+            public DateTime DateCreated { get; set; }
+            public DateTime CheckIn { get; set; }
+            public DateTime CheckOut { get; set; }
+            public int Guests { get; set; }
+            public decimal TotalFee { get; set; }
+            public bool Paid { get; set; }
+            public Traveler Traveler { get; set; }
+        }
+    }
+   ```
+
+#### Task 3: Create a DbContext
+
+1. To add a new **Database** folder, right-click in the Explorer pane, and then select **New Folder**.
+2. Right-click the **Database** folder, and then select **New File**. In the box on the top, type **MyDbContext.cs**, and then press Enter.
+3. In **MyDbContext.cs**, add the following using statements:
+   ```cs
+    using Microsoft.EntityFrameworkCore;
+    using DAL.Models;
+   ```
+4. In **MyDbContext.cs**, under the **using** statements, add the following code:
+   ```cs
+    namespace DAL.Database
+    {
+        public class MyDbContext : DbContext
+        {
+            public DbSet<Traveler> Travelers { get; set; }
+            public DbSet<Room> Rooms { get; set; }
+            public DbSet<Booking> Bookings { get; set; }
+            public DbSet<Hotel> Hotels { get; set;}
+
+            private void InitialDBContext()
+            {
+                DbInitializer.Initialize(this);
+            }
+
+            // Default Constructor
+            public MyDbContext()
+            {
+                InitialDBContext();
+            }
+
+            // Constructor with options
+            public MyDbContext(DbContextOptions<MyDbContext> options)
+                    : base(options)
+            {
+                InitialDBContext();
+            }
+
+            protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            {
+                if (!optionsBuilder.IsConfigured)
+                {
+                    optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=Mod2Lab1DB;Trusted_Connection=True;");    
+                }
+            }
+        }
+    }
+   ```
+
+### Exercise 2: Query your database
+
+#### Task 1: Create a database initializer with dummy data
+
+1.  Right-click the **Database** folder, and then select **New File**. In the box on the top, type **DbInitializer.cs**, and then press Enter.
+2.  In **DbInitializer.cs**, add the following using statements:
+   ```cs
+    using System;
+    using System.Collections.Generic;
+    using DAL.Models;
+   ```
+3.  In **DbInitializer.cs**, add the following code:
+   ```cs
+    namespace DAL.Database
+    {
+        public static class  DbInitializer
+        {
+            public static void Initialize(MyDbContext context)
+            {
+                if(context.Database.EnsureCreated())
+                {
+                    // Code to create initial data
+                    Seed(context);
+                }
+            }
+
+            private static void Seed(MyDbContext context)
+            {
+                 // Create list with dummy Travelers
+                 List<Traveler> travelerList = new List<Traveler>
+                 {
+                     new Traveler(){ Name = "Jon Due", Email = "jond@outlook.com"},
+                     new Traveler(){ Name = "Jon Due2", Email = "jond2@outlook.com"},
+                     new Traveler(){ Name = "Jon Due3", Email = "jond3@outlook.com"}
+                 };
+
+                 // Create list with dummy bookings
+                List<Booking> bookingList = new List<Booking>
+                {
+                    new Booking()
+                    {
+                        DateCreated = DateTime.Now,
+                        CheckIn = DateTime.Now,
+                        CheckOut = DateTime.Now.AddDays(2),
+                        Guests = 2,
+                        Paid = true,
+                        Traveler = travelerList[0]
+                    },
+                    new Booking()
+                    {
+                        DateCreated = DateTime.Now.AddDays(3),
+                        CheckIn = DateTime.Now.AddDays(5),
+                        CheckOut = DateTime.Now.AddDays(8),
+                        Guests = 3,
+                        Paid = true,
+                        Traveler = travelerList[1]
+                    },
+                    new Booking()
+                    {
+                        DateCreated = DateTime.Now.AddDays(-10),
+                        CheckIn = DateTime.Now.AddDays(10),
+                        CheckOut = DateTime.Now.AddDays(11),
+                        Guests = 1,
+                        Paid = false,
+                        Traveler = travelerList[2]
+                    }
+                };
+
+                 // Create list with dummy rooms
+                 List<Room> roomList = new List<Room>
+                 {
+                     new Room(){ Number = 10, Price = 300},
+                     new Room(){ Number = 20, Price = 200},
+                     new Room(){ Number = 30, Price = 100}
+                 };
+
+                 roomList[0].Bookings.Add(bookingList[0]);
+                 roomList[1].Bookings.Add(bookingList[1]);
+                 roomList[1].Bookings.Add(bookingList[2]);
+
+                 Hotel hotel = new Hotel()
+                 {
+                     Name = "Azure Hotel",
+                     Address = "Cloud",
+                     Rooms = roomList
+                 };
+
+                 // Insert the dummy data to the database
+                 context.Travelers.AddRange(travelerList);
+                 context.Bookings.AddRange(bookingList);
+                 context.Rooms.AddRange(roomList);
+                 context.Hotels.Add(hotel);
+
+                 context.SaveChanges();
+            }
+        }
+    }
+   ```
+
+#### Task 2: Write a language-integrated query (LINQ) query to query the data
+
+1. Close the VS Code window.
+2. Create a new **ASP.NET Core Console Application** project. At the command prompt, paste the following command, and then press Enter:
+   ```bash
+    dotnet new console --name DatabaseTester --output [Repository Root]\Allfiles\Mod02\LabFiles\Lab1\Starter\DatabaseTester
+   ```  
+3. After the project is created, to change the directory, at the command prompt, run the following command:
+   ```bash
+    cd [Repository Root]\Allfiles\Mod02\LabFiles\Lab1\Starter
+   ```
+4. To create a new solution in the **DAL** and **DatabaseTester** projects, run the following command:
+   ```bash
+    dotnet new sln --name Mod2Lab1
+   ```
+5. To add the **DAL** project to the solution, run the following command:
+   ```bash
+    dotnet sln Mod2Lab1.sln add DAL\DAL.csproj
+   ```
+6. To add the **DatabaseTester** project to the solution, run the following command:
+   ```bash
+    dotnet sln Mod2Lab1.sln add DatabaseTester\DatabaseTester.csproj
+   ```
+7. To open the solution in VS Code, at the command prompt, run the following command:
+   ```bash
+    code .
+   ```
+    >**Note**: To open the solution in Microsoft Visual Studio, double-click the **Mod2Lab1.sln** file.
+
+8. In the VS Code Explorer pane, expand the **DatabaseTester** folder, and then double-click **DatabaseTester.csproj**.
+9. In **DatabaseTester.csproj**, to add a reference **DAL** class library, inside the **\<Project\>** tag, add the following xml code:
+   ```xml
+    <ItemGroup>
+        <ProjectReference Include="..\DAL\DAL.csproj" />
+    </ItemGroup>
+   ```
+10. In the **DatabaseTester** folder, navigate to **Program.cs**, and then add the following **using** statements:
+   ```cs
+    using DAL.Database;
+    using DAL.Models;
+    using System.Linq;
+    using System.Collections.Generic;
+   ```
+11. Locate the **Main** method, and then replace the content with the following code:
+   ```cs
+    using (MyDbContext context = new MyDbContext())
+    {
+        DbInitializer.Initialize(context);
+
+        Hotel hotel = context.Hotels.FirstOrDefault();
+        Console.WriteLine($"hotel name: {hotel.Name}");
+
+        Console.WriteLine("Rooms:");
+        foreach (Room room in context.Rooms.ToList())
+            Console.WriteLine($"room number: {room.Number}, Price: {room.Price}");
+
+        Console.WriteLine("Travelers:");
+        foreach (Traveler traveler in context.Travelers.ToList())
+            Console.WriteLine($"traveler name: {traveler.Name}, email: {traveler.Email} ");
+    }
+   ```
+12. Switch to the Command Prompt window.
+13. To change the directory to the **DatabaseTester** project, run the following command:
+   ```bash
+    cd [Repository Root]\Allfiles\Mod02\LabFiles\Lab1\Starter\DatabaseTester
+   ```
+14. To run the application, run the following command:
+   ```bash
+    dotnet run
+   ```
+15. At the command prompt, check that the dummy data is shown.
+
+# Lab: Manipulating Data
+
+### Exercise 1: Create repository methods
+
+#### Task 1: Create a method to add entities
+
+1. Open the Command Prompt window.
+2. To change the directory to the startup project, run the following command:
+   ```bash
+    cd [Repository Root]\Allfiles\Mod02\LabFiles\Lab2\Starter
+   ```
+3. To open the project in VS Code, run the following command:
+   ```bash
+    code .
+   ```
+4. On the **Explorer** blade, under **STARTER**, expand the **DAL** folder, expand the **Repository** folder, and then double-click **HotelBookingRepository.cs**.
+5. To add a private field for **DbContextOptions**, inside Class paste the following code:
+   ```cs
+    private DbContextOptions<MyDbContext> _options;
+   ```
+6. To add a new constructor that initialize the **options**, inside Class paste the following code:
+   ```cs
+    public HotelBookingRepository()
+    {
+        _options = new DbContextOptionsBuilder<MyDbContext>()
+            .UseSqlServer(@"Server=.\SQLEXPRESS;Database=Mod2Lab2DB;Trusted_Connection=True;")
+            .Options;
+    }
+   ``` 
+7. To add a new constructor with **options** parameter, inside Class paste the following code:
+   ```cs
+    public HotelBookingRepository(DbContextOptions<MyDbContext> options)
+    {
+        _options = options;
+    }
+   ```
+8. To add a new booking entity to **Database**, inside **Class**, paste the following method:
+   ```cs
+    public async Task<Booking> Add(int travelerId, int roomId, DateTime checkIn, int guest = 1)
+    {
+        using (MyDbContext context = new MyDbContext(_options))
+        {
+            Traveler traveler = context.Travelers.FirstOrDefault(t => t.TravelerId == travelerId);
+            Room room = context.Rooms.FirstOrDefault(r => r.RoomId == roomId);
+            if (traveler != null && room != null)
+            {
+                Booking newBooking = new Booking()
+                {
+                    DateCreated = DateTime.Now,
+                    CheckIn = checkIn,
+                    CheckOut = checkIn.AddDays(1),
+                    Guests = guest,
+                    Paid = false,
+                    Traveler = traveler,
+                    Room = room
+                };
+                Booking booking = (await context.Bookings.AddAsync(newBooking))?.Entity;
+                await context.SaveChangesAsync();
+                return booking;
+            }
+            return null;
+        }
+    }
+   ```
+
+#### Task 2: Create a method to update entities
+
+To update the booking entity in **Database**, inside **Class**, paste the following method:
+   ```cs
+    public async Task<Booking> Update(Booking bookingToUpdate)
+    {
+        using (MyDbContext context = new MyDbContext(_options))
+        {
+            Booking booking = context.Bookings.Update(bookingToUpdate)?.Entity;
+            await  context.SaveChangesAsync();
+            return booking;
+        }
+    }
+   ```
+
+#### Task 3: Create a method to delete entities
+
+To delete the booking entity from **Database**, inside **Class**, paste the following method:
+   ```cs
+    public async void Delete(int bookingId)
+    {
+        using (MyDbContext context = new MyDbContext(_options))
+        {
+            Booking booking = context.Bookings.FirstOrDefault(b => b.BookingId == bookingId);
+
+            if (booking != null)
+            {
+                context.Bookings.Remove(booking);
+                await context.SaveChangesAsync();
+            }
+        }
+    }
+   ```
+
+### Exercise 2: Test the model using SQL Server and SQLite
+
+#### Task 1: Create test code with transactions
+
+1. Open the Command Prompt window.
+2. To change the directory to the **Starter** folder, run the following command:
+   ```bash
+    cd [Repository Root]\Allfiles\Mod02\LabFiles\Lab2\Starter
+   ```
+3. To create a new unit test project, run the following command:
+   ```bash
+   dotnet new mstest --name DAL.Test
+   ```
+4. To add the **DAL.Test** project to the solution, run the following command:
+   ```bash
+   dotnet sln Mod2Lab2.sln add DAL.Test\DAL.Test.csproj
+   ```
+5. To open the solution in VS Code, run the following command:
+   ```bash
+   code .
+   ```
+6. In VS Code, expand the **DAL.Test** folder, and then double-click **DAL.Test.csproj**.
+7. To add a reference to the **DAL** project, inside the **\<project\>**, paste the following code:
+   ```xml
+   <ItemGroup>
+        <ProjectReference Include="..\DAL\DAL.csproj" />
+   </ItemGroup>
+   ```
+8. Locate the **UnitTest1.cs** file, and then rename it to **BookingRepositoryTests**.
+9. Add the following **using** statements:
+   ```cs
+   using System.Transactions;
+   using System;
+   using DAL.Repository;
+   using DAL.Models;
+   using DAL.Database;
+   using System.Threading.Tasks;
+   using System.Linq;
+   using Microsoft.EntityFrameworkCore;
+   ```
+10. Change **public void TestMethod1()** to **public async Task AddTwoBookingsTest()**.
+11. To test the **Transaction Scope** with two bookings, inside the **AddTwoBookingsTest** method, paste the following code:
+   ```cs
+    Booking fristBooking;
+    Booking secondBooking;
+    using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required,
+            new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }, TransactionScopeAsyncFlowOption.Enabled))
+    {
+        HotelBookingRepository repository = new HotelBookingRepository();
+        fristBooking = await repository.Add(1, 1, DateTime.Now.AddDays(6), 4);
+        secondBooking = await repository.Add(1, 2, DateTime.Now.AddDays(8), 3);
+        scope.Complete();
+    }
+
+    using (MyDbContext context = new MyDbContext())
+    {
+        int bookingsCounter = context.Bookings.Where(booking => booking.BookingId == fristBooking.BookingId ||
+                                                                booking.BookingId == secondBooking.BookingId).ToList().Count;
+        Assert.AreEqual(2, bookingsCounter);
+    }
+   ```
+
+#### Task 2: Test code against a local Microsoft SQL Server database
+
+1. Switch to the Command Prompt window.
+2. To change the directory to the **DAL.Test** folder, run the following command:
+   ```bash
+   cd [Repository Root]\Allfiles\Mod02\LabFiles\Lab2\Starter\DAL.Test
+   ```
+3. To test the **AddTwoBookingsTest** method, run the following command:
+   ```bash
+   dotnet test
+   ```
+4. Open **SQL Operations Studio**.
+5. In the **Server name** box, type **.\SQLEXPRESS**, and then click **Connect**.
+6. On the **Object Explorer** blade, expand **.\sqlexpress**, and then expand **Databases**.
+7. Ensure the **Mod2Lab2DB** database appears.
+8. Expand the **Mod2Lab2DB** node, and then expand the **Tables** node.
+9. Right-click **dbo.Bookings**, and then select **Select Top 1000 rows**.
+10. Check that both the bookings are saved in the database.
+
+#### Task 3: Replace the SQL Server provider with SQLite
+
+1. Switch to the Command Prompt window.
+2. Make sure the directory is at **DAL.Test**. If not, at the command prompt, run the following command::
+   ```bash
+    cd [Repository Root]\Allfiles\Mod02\LabFiles\Lab2\Starter\DAL.Test
+   ```
+3. To use **Entity Framework Core SQlite**, install the following package from the command prompt:
+   ```base
+    dotnet add package Microsoft.EntityFrameworkCore.Sqlite --version=2.1.1
+   ```
+4. To restore all the dependencies and tools of a project, at the command prompt, run the following command:
+   ```base
+    dotnet restore
+   ```
+5. To return to the solution folder, run the following command:
+   ```bash
+   cd ..
+   ```
+6. To open the solution in VS Code, paste the following command:
+   ```bash
+    code .
+   ```
+7. Expand the **DAL.Test** folder, then double-click **BookingRepositoryTests.cs**.
+8. At the start of the class, paste the following code:
+   ```cs
+     private DbContextOptions<MyDbContext> _options =
+               new DbContextOptionsBuilder<MyDbContext>()
+                   .UseSqlite(@"Data Source = [Repository Root]\Allfiles\Mod02\LabFiles\Lab2\Database\SqliteHotel.db")
+                   .Options;
+   ```
+9. To test bookings in **SQLite**, paste the following method:
+   ```cs
+     [TestMethod]
+        public async Task AddTwoBookingsSQLiteTest()
+        {
+            using (MyDbContext context = new MyDbContext(_options))
+            {
+
+                HotelBookingRepository repository = new HotelBookingRepository(_options);
+                Booking fristBooking = await repository.Add(1, 1, DateTime.Now.AddDays(6), 4);
+                Booking secondBooking = await repository.Add(1, 2, DateTime.Now.AddDays(8), 3);
+
+                int bookingsCounter = context.Bookings.Where(booking => booking.BookingId == fristBooking.BookingId ||
+                                                                        booking.BookingId == secondBooking.BookingId).ToList().Count;
+
+                Assert.AreEqual(2, bookingsCounter);
+            }
+        }
+   ```
+#### Task 4: Test code against SQLite
+
+1. Switch to the Command Prompt window.
+2. To change the directory to the **DAL.Test** folder, run the following command:
+   ```bash
+   cd [Repository Root]\Allfiles\Mod02\LabFiles\Lab1\Starter\DAL.Test
+   ```
+3. To test the **AddTwoBookingsTest** method, run the following command:
+   ```bash
+   dotnet test
+   ```
+4. Open **DB Browser for SQLite**.
+5. On the menu bar, click **File**, and then select **Open Database**.
+6. In the **Choose a database file** window, browse to **[Repository Root]\Allfiles\Mod02\LabFiles\Lab2\Database**, and then double-click **SqliteHotel.db**.
+7. In the **Database Structure** tab, expand **Tables**.
+8. Right-click the **Bookings** table, and then select **Browse Table**.
+9. In the **Browse Data** tab, verify that the two bookings exist in the database.
+10. Close all open windows.
+
+©2018 Microsoft Corporation. All rights reserved.
+
+The text in this document is available under the [Creative Commons Attribution 3.0 License](https://creativecommons.org/licenses/by/3.0/legalcode), additional terms may apply. All other content contained in this document (including, without limitation, trademarks, logos, images, etc.) are **not** included within the Creative Commons license grant. This document does not provide you with any legal rights to any intellectual property in any Microsoft product. You may copy and use this document for your internal, reference purposes.
+
+This document is provided &quot;as-is.&quot; Information and views expressed in this document, including URL and other Internet Web site references, may change without notice. You bear the risk of using it. Some examples are for illustration only and are fictitious. No real association is intended or inferred. Microsoft makes no warranties, express or implied, with respect to the information provided here.

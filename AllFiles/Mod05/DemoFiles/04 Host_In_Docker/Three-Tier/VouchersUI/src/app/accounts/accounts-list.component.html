@@ -1,0 +1,51 @@
+<mat-toolbar color="accent">
+  <mat-toolbar-row>
+    <div fxFlex="70"><span></span></div>
+    <div fxFlex="30" class="rightCell">
+      <button mat-fab routerLink="/accounts/0">
+        <mat-icon fxFlexAlign="center" class="cmdIcon">add</mat-icon>
+      </button>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<div class="panelBox">
+  <table class="table table-striped" style="width: 100%">
+    <colgroup>
+      <col style="width: 40%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 10%; text-align: center" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Activated On</th>
+        <th>Expense</th>
+        <th>Deprecated</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let a of accounts">
+        <td>{{ a.Name }}</td>
+        <td>{{ a.ActivatedOn | date: "shortDate" }}</td>
+        <td [innerHTML]="a.Expense | checked"></td>
+        <td [innerHTML]="a.Deprecated | checked"></td>
+        <td>
+          <a mat-mini-fab (click)="deleteAcccount(a)"
+            ><i class="material-icons cmdIcon">delete</i></a
+          >
+        </td>
+        <td>
+          <a mat-mini-fab [routerLink]="['/accounts', a.ID]"
+            ><i class="material-icons cmdIcon">mode_edit</i></a
+          >
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

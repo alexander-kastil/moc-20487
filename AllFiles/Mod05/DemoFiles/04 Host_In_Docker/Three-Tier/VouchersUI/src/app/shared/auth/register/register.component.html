@@ -1,0 +1,27 @@
+<div class="formContainer">
+
+  <div>
+    Or register a new account:
+  </div>
+
+  <mat-form-field>
+    <input type="text" matInput placeholder="Email Address" [(ngModel)]="login.email">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input type="password" matInput placeholder="Enter Password" [(ngModel)]="login.pwd">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input type="password" matInput placeholder="Re-Enter Password" [(ngModel)]="login.pwd2">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput placeholder="Display Name" [(ngModel)]="login.displayName" readonly>
+  </mat-form-field>
+
+  <div fxLayout="row nowrap" fxLayoutGap="1.5rem">
+    <button mat-raised-button (click)="registerUser()" color="accent">Register</button>
+  </div>
+
+</div>

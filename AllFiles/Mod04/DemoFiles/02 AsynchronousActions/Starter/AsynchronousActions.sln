@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlueYonder.Flights.Service", "BlueYonder.Flights.Service\BlueYonder.Flights.Service.csproj", "{FC471C47-B268-410A-A717-FFFC3949F24B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlueYonder.Flights.DAL", "BlueYonder.Flights.DAL\BlueYonder.Flights.DAL.csproj", "{B87EE885-3727-4D94-830D-5B66B49B474C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueYonder.Flights.Client", "BlueYonder.Flights.Client\BlueYonder.Flights.Client.csproj", "{F3106B4F-7555-463F-A024-E38227B6A3E0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC471C47-B268-410A-A717-FFFC3949F24B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC471C47-B268-410A-A717-FFFC3949F24B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC471C47-B268-410A-A717-FFFC3949F24B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC471C47-B268-410A-A717-FFFC3949F24B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B87EE885-3727-4D94-830D-5B66B49B474C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B87EE885-3727-4D94-830D-5B66B49B474C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B87EE885-3727-4D94-830D-5B66B49B474C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B87EE885-3727-4D94-830D-5B66B49B474C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3106B4F-7555-463F-A024-E38227B6A3E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3106B4F-7555-463F-A024-E38227B6A3E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3106B4F-7555-463F-A024-E38227B6A3E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3106B4F-7555-463F-A024-E38227B6A3E0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DA1E81E1-935C-41DD-9DD7-EB1AB9D67ABC}
+	EndGlobalSection
+EndGlobal

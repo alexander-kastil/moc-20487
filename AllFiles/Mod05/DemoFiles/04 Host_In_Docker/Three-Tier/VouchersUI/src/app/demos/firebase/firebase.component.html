@@ -1,0 +1,13 @@
+<div *ngIf="currentUser == null">
+  <app-login></app-login>
+  <app-register></app-register>
+</div>
+
+<div *ngIf="currentUser != null" fxLayout="column" fxLayoutGap="10px">
+  <div>You are Authenticated by Firebase as: {{ currentUser?.email }}</div>
+  <button mat-raised-button color="accent" (click)="callCoreApi()">
+    Call Secured .NET Core Api
+  </button>
+  <div>{{ resp }}</div>
+  <button mat-raised-button (click)="logOut()" color="accent">Log Off</button>
+</div>

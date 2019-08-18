@@ -1,0 +1,17 @@
+[
+  {
+    "url": "winauth",
+    "title": "Using Windows Auth",
+    "component": "WinAuthComponent"
+  },
+  {
+    "url": "firebase",
+    "title": "Firebase Jwt Token Auth ",
+    "component": "FirebaseComponent"
+  },
+  {
+    "url": "adal",
+    "title": "Azure AD - ADAL",
+    "component": "AdalComponent"
+  }
+]

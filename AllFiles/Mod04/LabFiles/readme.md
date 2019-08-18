@@ -1,0 +1,343 @@
+
+# Module 4: Extending ASP.NET Core HTTP Services
+
+# Lab: Customizing the ASP.NET Core Pipeline
+
+1. Wherever a path to a file starts with *[Repository Root]*, replace it with the absolute path to the directory in which the 20487 repository resides. 
+ For example, if you cloned or extracted the 20487 repository to **C:\Users\John Doe\Downloads\20487**, change the path: **[Repository Root]\AllFiles\20487D\Mod01** to **C:\Users\John Doe\Downloads\20487\AllFiles\20487D\Mod01**.
+2. Wherever *{YourInitials}* appears, replace it with your actual initials. For example, the initials for **John Doe** will be **jd**.
+3. Before performing the demonstration, you should allow some time for the provisioning of the different Microsoft Azure resources required for the demonstration. You should review the demonstrations before the actual class, identify the resources, and then prepare them beforehand to save classroom time.
+
+
+### Exercise 1: Use Dependency Injection to Get a Repository Object
+
+#### Task 1: Create an interface for the repository 
+
+1. Open a **Command Prompt** window.
+2. To change the directory to the starter project, run the following command:
+    ```bash
+    cd [Repository Root]\Allfiles\Mod04\LabFiles\Lab1\Starter\BlueYonder.Hotels
+    ```
+3. To restore all the dependencies and tools of a project, run the following command:
+    ```base
+    dotnet restore
+    ```
+4. To open the project in Microsoft Visual Studio Code, run the following command:
+    ```bash
+    code .
+    ```
+5. To create a new **IHotelBookingRepository** interface, expand the **BlueYonder.Hotels.DAL** folder, right-click the **Repository** folder, select **New File**, and then name it **IHotelBookingRepository.cs**.
+6. Add the following **using** statements to the class:
+    ```cs
+    using BlueYonder.Hotels.DAL.Models;
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using System.Threading.Tasks;
+    ```
+8. To add a namespace, enter the following code:
+    ```cs
+    namespace BlueYonder.Hotels.DAL.Repository
+    {
+
+    }
+    ```
+9. To add an interface declaration, inside the **namespace** brackets, enter the following code:
+    ```cs
+    public interface IHotelBookingRepository
+    {
+
+    }
+    ```
+10. To add method signatures, paste the following code:
+    ```cs
+    IEnumerable<Room> GetAvaliabileByDate(DateTime date);
+    IEnumerable<Reservation> GetAllReservation();
+    Task DeleteReservation(int reservationId);
+    ```
+
+#### Task 2: Implement the interface on the repository
+
+1. Expand the **BlueYonder.Hotels.DAL** folder, expand the **Repository** folder, and then select the **HotelBookingRepository** class.
+2. To the **HotelBookingRepository** class, add the following **using** statement:
+    ```cs
+    using BlueYonder.Hotels.DAL.Repository;
+    ```
+3. To use the **IHotelBookingRepository** interface, locate the **class** declaration, and then replace it with the following code.
+    ```cs
+    public class HotelBookingRepository :  IHotelBookingRepository
+    ```
+
+#### Task 3: Register the repository object in the ASP.NET Core Dependency Injection mechanism
+
+1. Expand the **BlueYonderHotels.Service** folder, and then double-click the **Startup.cs** file.
+2. To the **Startup.cs** class, add the following **using** statement:
+    ```cs
+    using BlueYonder.Hotels.DAL.Repository;
+    ```
+3. To register the repository, in **Startup.cs**, locate the **ConfigureServices** method, and then add the following code:
+    ```cs
+    services.AddTransient<IHotelBookingRepository, HotelBookingRepository>();
+    ```
+#### Task 4: Change the controller’s constructor to request an injected repository
+
+1. Expand the **BlueYonderHotels.Service** folder, expand the **Controllers** folder, and then double-click the **HotelBookingController** file.
+2. To change **HotelBookingRepository** to **IHotelBookingRepository**, enter the following code:
+    ```cs
+    private readonly IHotelBookingRepository _hotelBookingRepository;
+    ```
+3. To get the **IHotelBookingRepository** interface as a parameter, locate the private readonly code and then replace with the following code:
+    ```cs
+    public HotelBookingController(IHotelBookingRepository hotelBookingRepository)
+    {
+        _hotelBookingRepository = hotelBookingRepository;
+    }
+    ```
+
+### Exercise 2: Create a Cache Filter
+
+#### Task 1: Create an action filter for cache headers
+
+
+1. To create a new **Attributes** folder, right-click the **BlueYonderHotels.Service** folder, select **New Folder**, and then name it **Attributes**.
+2. To create the new **CacheAttribute** class, right-click the **Attributes** folder, select **New File**, and then name it **CacheAttribute.cs**.
+3. Add the following **using** statements to the **CacheAttribute** class:
+    ```cs
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Filters;
+    using Microsoft.Extensions.Primitives;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    ```
+4. To add a namespace, enter the following code:
+    ```cs
+    namespace BlueYonderHotels.Service.Attribute
+    {
+
+    }
+    ```
+5. To create a class declaration, inside the **namespace** brackets, enter the following code:
+    ```cs
+    public class CacheAttribute : ActionFilterAttribute
+    {
+
+    }
+    ```
+6.  To add fields to the class, inside the **class** brackets, enter the following code:
+    ```cs
+    private string _headerMessage { get; set; }
+    private TimeSpan _durationTime;
+    private const int _defulatDuration = 60;
+    private Dictionary<string,(DateTime, IActionResult)> _cache = new Dictionary<string, (DateTime,IActionResult)>();
+    ```
+7.  To add a constructor with the **int** optionl parameter, inside the **class** brackets, enter the following code: 
+    ```cs
+    public CacheAttribute(int duration = _defulatDuration)
+    {
+        _durationTime = new TimeSpan(0, 0, duration);
+    }
+    ```
+8.  To add a constructor with the **string** parameter, inside the **class** brackets, enter the following code:
+    ```cs
+    public CacheAttribute(string message)
+    {
+        _durationTime = new TimeSpan(0, 0, _defulatDuration);
+        _headerMessage = message;
+    }
+    ``` 
+9.  To add a method to check the cache validation, inside the **class** brackets, enter the following code:
+    ```cs
+    private bool CacheValid(FilterContext context)
+    {
+        StringValues xCacheHeader = context.HttpContext.Request.Headers[_headerMessage];
+        if (xCacheHeader == "false" || xCacheHeader.Count == 0)
+        {
+            if (_cache.TryGetValue(context.HttpContext.Request.Path, out (DateTime, IActionResult) cacheValue))
+            {
+                if (DateTime.Now - cacheValue.Item1 < _durationTime)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    ```
+10. To override the **OnActionExecuting** method, inside the **class** brackets, enter the following code:
+    ```cs
+    public override void OnActionExecuting(ActionExecutingContext context)
+    {
+        if (CacheValid(context))
+        {
+            context.Result = _cache[context.HttpContext.Request.Path].Item2;
+            return;
+        }
+        base.OnActionExecuting(context);
+    }
+    ```
+11. To override the **OnResultExecuted** method, inside the **class** brackets, enter the following code:
+    ```cs
+    public override void OnResultExecuted(ResultExecutedContext context)
+    {
+        if(!CacheValid(context))
+             _cache[context.HttpContext.Request.Path] = (DateTime.Now,context.Result);
+        base.OnResultExecuted(context);
+    }
+    ```
+
+#### Task 2: Add the cache filter to several actions
+
+1. Expand the **BlueYonderHotels.Service** folder, expand the **Controllers** folder, and then double-click **HotelBookingController**.
+2. Above the **GetAvailability** method, enter the following **attribute**:
+   ```cs
+    [Cache("X-No-Cache")]
+   ```
+
+#### Task 3: Test cacheable and non-cacheable actions from a browser
+
+1. Switch to the **Command Prompt** window.
+2. To change the directory to **BlueYonderHotels.Service**, run the following command:
+   ```bash
+   cd BlueYonderHotels.Service
+   ```
+3. To run the service, run the following command:
+   ```cd
+   dotnet run
+   ```
+4. Open Windows Powershell.
+5. To get the reservations from the server, run the following command:
+    ```bash
+    $getReservations = Invoke-WebRequest -Uri https://localhost:5001/api/HotelBooking/Reservation -UseBasicParsing
+    ```
+    >**Note:** If you get the **The underlying connection was closed: An unexpected error occurred on a send** error message, run the **[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12** command, and then redo the step.
+6. To display the http result, run the following command:
+    ```bash
+    $getReservations
+    ```
+7. To display only the http content, run the following command:
+    ```bash
+    $getReservations.Content
+    ```
+8. To get the available rooms on the current date, run the following command:
+   ```bash
+   Invoke-WebRequest -Uri https://localhost:5001/api/HotelBooking/Availability/[year]-[month]-[day] -UseBasicParsing
+   ```
+   >**Note:** Replace the last section of the URL with the current date.
+9. To remove the reservation, run the following command:
+    ```bash
+    Invoke-WebRequest -Uri https://localhost:5001/api/HotelBooking/Reservation/1 -Method DELETE -UseBasicParsing
+    ```
+10. Repeat step 8, verify that the room list hasn't changed, wait for one more minute, and repeat step 8 again, and then verify that       available rooms appear in the room list.
+
+### Exercise 3: Create a Debugging Middleware
+
+#### Task 1: Create a middleware class to calculate execution time
+
+1. Right-click the **BlueYonderHotels.Service** folder, select **New Folder**, and then name it **Middleware**.
+2. To create a new **ExecutionTimeMiddleware** class, right-click the **Middleware** folder, select **New Flie**, and then name it **ExecutionTimeMiddleware.cs**.
+3. To the **ExecutionTimeMiddleware** class, add the following **using** statements:
+   ```cs
+   using Microsoft.AspNetCore.Builder;
+   using Microsoft.AspNetCore.Http;
+   using System;
+   using System.Collections.Generic;
+   using System.Diagnostics;
+   using System.Linq;
+   using System.Threading.Tasks;
+   ```
+4. To add a namespace, enter the following code:
+    ```cs
+    namespace BlueYonderHotels.Service.Middleware
+    {
+
+    }
+    ```
+5. To add a class declaration, inside the **namespace** brackets, enter the following code:
+    ```cs
+    public static class ExecutionTimeMiddleware
+    {    
+
+    }
+    ```
+6. To add the **AddResponeHeaders** method, inside the **class** brackets, enter the following code:
+    ```cs
+    private static async Task AddResponeHeaders(HttpContext context,Func<Task> next)
+    {
+        
+    }
+    ``` 
+#### Task 2: Write server and debug information to response headers
+
+1. To add the **Server Name** header, inside the **AddResponeHeaders** method brackets, enter the following code:
+    ```cs
+    context.Response.Headers.Add("X-Server-Name", Environment.MachineName);
+    ``` 
+2. To add the **OS Version** header, under **X-Server-Name**, enter the following code:
+    ```cs
+    context.Response.Headers.Add("X-OS-Version", Environment.OSVersion.VersionString);
+    ```
+3. To add the **Request Execution Time** header, under **X-OS-Version**, enter the following code:
+    ```cs
+    Stopwatch stopwatch = new Stopwatch();
+    stopwatch.Start();
+
+    context.Response.OnStarting(state => 
+    {
+        var httpContext = (HttpContext)state;
+        stopwatch.Stop();
+        httpContext.Response.Headers.Add("X-Request-Execution-Time", stopwatch.ElapsedMilliseconds.ToString());
+        return Task.CompletedTask;
+    }, context);
+    ```
+4. To continue to the next middleware, under **X-Request-Execution-Time**, enter the following code:
+    ```cs
+    await next();
+    ```
+
+#### Task 3: Create the IApplicationBuilder helper class
+
+1. To create an extension method to **IApplicationBuilder**, inside the class, enter the following code:
+    ```cs
+    public static IApplicationBuilder UseExecutionTimeMiddleware(this IApplicationBuilder app)
+    {
+
+       return app; 
+    }
+    ```
+2. To use the **AddResponeHeaders** method, above **return**, enter the following code:
+    ```cs
+    app.Use(AddResponeHeaders);
+    ```
+
+#### Task 4: Register the middleware to the ASP.NET Core pipeline
+
+1. Expand the **BlueYonderHotels.Service** folder, and then double-click the **Startup.cs** file.
+2. To the **Startup.cs** class, add the following **using** statement:
+    ```cs
+    using BlueYonderHotels.Service.Middleware;
+    ```
+2. To use the **UseExecutionTimeMiddleware**, locate the **Configure** method, and then above **app.UseHttpsRedirection**, enter the following code :
+    ```cs
+    app.UseExecutionTimeMiddleware();
+    ```
+
+#### Task 5: Test the new middleware from a browser
+
+1. Open Microsoft Edge and go to the following URL.
+    ```url
+    https://localhost:5001/api/HotelBooking/Reservation
+    ```
+2. In the title bar, click **Settings and more**, and then select **Developer Tools**.
+3. In **Developer Tools**, click the **Network** tab, refresh the page and then select **Reservation**.
+4. Expand **Response Header**.
+5. Verify that you have received **x-os-version**, **x-server-name**, and **x-request-execution-time** from the server.
+6. Close all open windows.
+
+
+©2018 Microsoft Corporation. All rights reserved.
+
+The text in this document is available under the [Creative Commons Attribution 3.0 License](https://creativecommons.org/licenses/by/3.0/legalcode), additional terms may apply. All other content contained in this document (including, without limitation, trademarks, logos, images, etc.) are **not** included within the Creative Commons license grant. This document does not provide you with any legal rights to any intellectual property in any Microsoft product. You may copy and use this document for your internal, reference purposes.
+
+This document is provided &quot;as-is.&quot; Information and views expressed in this document, including URL and other Internet Web site references, may change without notice. You bear the risk of using it. Some examples are for illustration only and are fictitious. No real association is intended or inferred. Microsoft makes no warranties, express or implied, with respect to the information provided here.

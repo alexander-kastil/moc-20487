@@ -1,0 +1,4 @@
+﻿
+input:after, span:after {
+    content: '<br/>';    
+}

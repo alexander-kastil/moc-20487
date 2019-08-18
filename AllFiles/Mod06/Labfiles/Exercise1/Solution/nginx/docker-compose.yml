@@ -1,0 +1,8 @@
+version: '3'
+services:
+  nginx:
+    image: nginxproxy
+    ports:
+     - "1235:80"
+  webapp:
+    image: "myapp"

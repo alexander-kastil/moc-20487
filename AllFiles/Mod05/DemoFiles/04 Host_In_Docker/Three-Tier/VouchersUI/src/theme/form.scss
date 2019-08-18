@@ -1,0 +1,31 @@
+.form{    
+    padding: 15px 10px;    
+    border: none;
+    background-color: white;
+}
+
+.form-default-width {
+  width: 90%;
+}
+
+.form-default-width-r {
+  width: 90%;
+  justify-content: flex-end;
+}
+
+.form-full-width {
+  width: 100%;
+}
+
+.form-radio-group {
+  display: inline-flex;
+  flex-direction: row;
+}
+
+.form-radio-button {
+  margin: 5px;
+}
+
+.form-selected-value {
+  margin: 15px 0;
+}

@@ -1,0 +1,27 @@
+db.customers.insertMany([
+    {
+      customerId: "1",
+      firstName: "Kevin",
+      lastName: "Liu"
+    },
+    {
+      customerId: "2",
+      firstName: "Martin",
+      lastName: "Weber"
+    },
+    {
+      customerId: "3",
+      firstName: "George",
+      lastName: "Li"
+    },
+    {
+      customerId: "4",
+      firstName: "Lisa",
+      lastName: "Miller"
+    },
+    {
+      customerId: "5",
+      firstName: "Sean",
+      lastName: "Stewart"
+    }
+    ])

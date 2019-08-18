@@ -1,0 +1,37 @@
+[
+    {
+        "ID": 1,
+        "Name": "Unclassified",
+        "Expense": true
+    },
+    {
+        "ID": 2,
+        "Name": "Car Maintenance",
+        "Expense": true
+    },
+    {
+        "ID": 3,
+        "Name": "Development",
+        "Expense": false
+    },
+    {
+        "ID": 4,
+        "Name": "Consulting",
+        "Expense": false
+    },
+    {
+        "ID": 5,
+        "Name": "Training",
+        "Expense": false
+    },
+    {
+        "ID": 6,
+        "Name": "Software",
+        "Expense": true
+    },
+    {
+        "ID": 7,
+        "Name": "Hosting & Internet",
+        "Expense": true
+    }
+]

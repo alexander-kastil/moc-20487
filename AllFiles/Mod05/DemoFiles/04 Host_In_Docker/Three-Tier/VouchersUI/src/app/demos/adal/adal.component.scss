@@ -1,0 +1,15 @@
+mat-card {
+  margin: 1.5rem 0;
+}
+
+.files {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+
+  .items {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}

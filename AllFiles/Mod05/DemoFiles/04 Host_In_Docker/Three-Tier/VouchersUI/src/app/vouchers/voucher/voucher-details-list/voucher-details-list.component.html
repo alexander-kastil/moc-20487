@@ -1,0 +1,46 @@
+<div fxLayout="column">
+    <mat-toolbar color="accent">
+        <mat-toolbar-row>
+            <div fxFlex="70">
+                <span class="toolbarHeading">Details</span>
+            </div>
+            <div fxFlex="30" class="rightCell">                
+                <button mat-fab (click)="addDetail()"><mat-icon fxFlexAlign="center" class="cmdIcon">add_circle</mat-icon></button>
+            </div>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    <div class="form">
+        <table cellspacing="0" cellpadding="0" class="table table-hover">
+            <colgroup>                
+                <col style="width: 40%" />
+                <col style="width: 15%" />
+                <col style="width: 30%" />
+                <col style="width: 5%" />
+                <col style="width: 5%" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th scope="col">Text</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Account</th>
+                    <th colspan="2" scope="col"></th>
+                </tr>
+            </thead>
+            <tbody id="tblVoucherDetailsBody">
+                <tr *ngFor="let vd of details">
+                    <td> {{vd.Text}}</td>
+                    <td>{{vd.Amount | currency:' €'}}</td>
+                    <td> {{vd.AccountID}}</td>
+                    <td>
+                        <a mat-mini-fab (click)="deleteDetail(vd)"><i class="material-icons cmdIcon" >delete</i></a>
+                    </td>
+                    <td>
+                        <a mat-mini-fab (click)="selectDetail(vd)"><i class="material-icons cmdIcon">mode_edit</i></a>       
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

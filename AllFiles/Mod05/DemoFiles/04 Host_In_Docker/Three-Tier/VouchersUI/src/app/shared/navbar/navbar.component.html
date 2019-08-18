@@ -1,0 +1,30 @@
+<mat-toolbar>
+  <mat-toolbar-row fxLayoutAlign="start center" class="mainNav">
+    <div flxFlex="1 1 auto">
+      <img width="50px" src="/assets/images/angular.svg" />
+    </div>
+    <div flxFlex="2 1 auto" fxHide.lt-md="true">
+      <div class="navTitle">
+        smart Angular Single Page Application Development
+      </div>
+    </div>
+    <div style="min-width: 40px;"></div>
+    <div
+      flxFlex="3 1 auto"
+      fxLayout="row"
+      fxLayoutAlign="end center"
+      fxLayout.lt-sm="column"
+      fxLayoutGap="1rem"
+    >
+      <div
+        *ngFor="let route of rootRoutes"
+        routerLink="{{ '/' + route.path }}"
+        routerLinkActive="navLink-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="navLink"
+      >
+        {{ route.data?.title }}
+      </div>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>

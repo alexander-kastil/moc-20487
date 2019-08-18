@@ -1,0 +1,118 @@
+[
+  { "label": "user", "id": "Kevin Liu" },
+  { "label": "user", "id": "Sean Stewart" },
+  { "label": "user", "id": "Toby Nixon" },
+  { "label": "task", "id": "Lab 1" },
+  { "label": "task", "id": "Lab 2" },
+  { "label": "task", "id": "Lab 3" },
+  { "label": "task", "id": "Lab 4" },
+  { "label": "task", "id": "Lab 5" },
+  {
+    "label": "assigned-to",
+    "id": "4c761274-fae8-4a09-a5f2-87ce2b21c199",
+    "_sink": "Kevin Liu",
+    "_sinkLabel": "user",
+    "_vertexId": "Lab 1",
+    "_vertexLabel": "task",
+    "_isEdge": true
+  },
+  {
+    "label": "assigned-to",
+    "id": "71045f80-a78d-4d3b-8a8d-d902dc0cd39a",
+    "_sink": "Kevin Liu",
+    "_sinkLabel": "user",
+    "_vertexId": "Lab 2",
+    "_vertexLabel": "task",
+    "_isEdge": true
+  },
+  {
+    "label": "assigned-to",
+    "id": "b6224763-6189-47d3-a94f-b7ba91c04d59",
+    "_sink": "Sean Stewart",
+    "_sinkLabel": "user",
+    "_vertexId": "Lab 3",
+    "_vertexLabel": "task",
+    "_isEdge": true
+  },
+  {
+    "label": "assigned-to",
+    "id": "f745debe-a549-416a-93de-1cc3fbd1f4c2",
+    "_sink": "Toby Nixon",
+    "_sinkLabel": "user",
+    "_vertexId": "Lab 4",
+    "_vertexLabel": "task",
+    "_isEdge": true
+  },
+  {
+    "label": "assigned-to",
+    "id": "1506562a-e17e-41d0-b82a-5b79a5396489",
+    "_sink": "Toby Nixon",
+    "_sinkLabel": "user",
+    "_vertexId": "Lab 1",
+    "_vertexLabel": "task",
+    "_isEdge": true
+  },
+  {
+    "label": "assigned-to",
+    "id": "0ca73a43-ccf1-4184-b7e2-391df27ee59f",
+    "_sink": "Toby Nixon",
+    "_sinkLabel": "user",
+    "_vertexId": "Lab 5",
+    "_vertexLabel": "task",
+    "_isEdge": true
+  },
+  {
+    "label": "managed-by",
+    "id": "954f9793-e26b-48a5-83e1-4aca79af9f3b",
+    "_sink": "Sean Stewart",
+    "_sinkLabel": "user",
+    "_vertexId": "Kevin Liu",
+    "_vertexLabel": "user",
+    "_isEdge": true
+  },
+  {
+    "label": "managed-by",
+    "id": "3633bc50-4691-4373-bbd2-58658bacae73",
+    "_sink": "Sean Stewart",
+    "_sinkLabel": "user",
+    "_vertexId": "Toby Nixon",
+    "_vertexLabel": "user",
+    "_isEdge": true
+  },
+  {
+    "label": "depends-on",
+    "id": "6351993c-7714-4172-84e6-9cf8d612819e",
+    "_sink": "Lab 1",
+    "_sinkLabel": "task",
+    "_vertexId": "Lab 2",
+    "_vertexLabel": "task",
+    "_isEdge": true
+  },
+  {
+    "label": "depends-on",
+    "id": "784f2185-edea-4a6d-8194-2718c8bb74da",
+    "_sink": "Lab 2",
+    "_sinkLabel": "task",
+    "_vertexId": "Lab 3",
+    "_vertexLabel": "task",
+    "_isEdge": true
+  },
+  {
+    "label": "depends-on",
+    "id": "8c48c524-7a2b-4208-b2c1-03800e5a902b",
+    "_sink": "Lab 3",
+    "_sinkLabel": "task",
+    "_vertexId": "Lab 4",
+    "_vertexLabel": "task",
+    "_isEdge": true
+  },
+  {
+    "label": "depends-on",
+    "id": "4cde01dd-7382-4799-b97e-1cdd08e3ac99",
+    "_sink": "Lab 4",
+    "_sinkLabel": "task",
+    "_vertexId": "Lab 5",
+    "_vertexLabel": "task",
+    "_isEdge": true
+  }
+]

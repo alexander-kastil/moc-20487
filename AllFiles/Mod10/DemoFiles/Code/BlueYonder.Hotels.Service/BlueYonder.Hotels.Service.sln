@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlueYonder.Hotels.Service", "BlueYonder.Hotels.Service\BlueYonder.Hotels.Service.csproj", "{1EE033CD-9F71-43F2-8ABA-C3D1FB354198}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunCPU", "RunCPU\RunCPU.csproj", "{8FAA4E80-6912-49B9-83A1-40F5A3BD59D9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1EE033CD-9F71-43F2-8ABA-C3D1FB354198}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EE033CD-9F71-43F2-8ABA-C3D1FB354198}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EE033CD-9F71-43F2-8ABA-C3D1FB354198}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EE033CD-9F71-43F2-8ABA-C3D1FB354198}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FAA4E80-6912-49B9-83A1-40F5A3BD59D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FAA4E80-6912-49B9-83A1-40F5A3BD59D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FAA4E80-6912-49B9-83A1-40F5A3BD59D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FAA4E80-6912-49B9-83A1-40F5A3BD59D9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0705CC0A-F63C-40AC-B701-3AC14AFE949D}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "webappname": {
+            "value": ""
+        },
+        "hostingPlanName": {
+            "value": ""
+        },
+        "location": {
+            "value": ""
+        },
+        "sku": {
+            "value": "Standard"
+        },
+        "workerSize": {
+            "value": "0"
+        },
+        "serverFarmResourceGroup": {
+            "value": ""
+        },
+        "skuCode": {
+            "value": "S1"
+        },
+        "subscriptionId": {
+          "value": ""
+        }
+    }
+}

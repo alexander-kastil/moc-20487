@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<publishData>
+  <publishProfile profileName="Mod10demo4USap - Web Deploy" publishMethod="MSDeploy" publishUrl="mod10demo4usap.scm.azurewebsites.net:443" msdeploySite="Mod10demo4USap" userName="$Mod10demo4USap" userPWD="EmQwhrgoKtlrLfwlwmDWcwpYDvMDxTbyDWvmiCxqGi2M34mSw1dYkYdZkvqx" destinationAppUrl="http://mod10demo4usap.azurewebsites.net" SQLServerDBConnectionString="" mySQLDBConnectionString="" hostingProviderForumLink="" controlPanelLink="http://windows.azure.com" webSystem="WebSites">
+    <databases />
+  </publishProfile>
+  <publishProfile profileName="Mod10demo4USap - FTP" publishMethod="FTP" publishUrl="ftp://waws-prod-bay-085.ftp.azurewebsites.windows.net/site/wwwroot" ftpPassiveMode="True" userName="Mod10demo4USap\$Mod10demo4USap" userPWD="EmQwhrgoKtlrLfwlwmDWcwpYDvMDxTbyDWvmiCxqGi2M34mSw1dYkYdZkvqx" destinationAppUrl="http://mod10demo4usap.azurewebsites.net" SQLServerDBConnectionString="" mySQLDBConnectionString="" hostingProviderForumLink="" controlPanelLink="http://windows.azure.com" webSystem="WebSites">
+    <databases />
+  </publishProfile>
+</publishData>

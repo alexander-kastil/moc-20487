@@ -1,0 +1,114 @@
+﻿<script src="/js/voucherDetails.js"></script>
+<div id="divVoucherDetails">
+    <fieldset>
+        <legend>Voucher Data</legend>
+        <div class="tbl">
+            <div class="tblRow">
+                <div style="width: 5%"><span>Text:</span></div>
+                <div style="width: 40%"><input type="text" id="txtVoucherText"></div>
+                <div style="width: 5%"><span>Date:</span></div>
+                <div style="width: 15%"><input type="text" id="txtDate"></div>
+                <div style="width: 30%">
+                    <table style="width:100%;">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input type="radio" value="0" checked="checked" id="rbExpense">
+                                    <label for="rbExpense">Expense</label>
+                                </td>
+                                <td>
+                                    <input id="rbIncome" type="radio">
+                                    <label for="rbIncome">Income</label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width: 5%"><span>Paid:</span></div>
+                <div style="padding-top: 4px">
+                    <input id="chkPaid" type="checkbox">
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Details</legend>
+        <div>
+            <div class="tbl" style="padding-bottom: 10px">
+                <div class="tblRow">
+                    <div style="width: 400px">
+                        <span>Text:</span>
+                    </div>
+                    <div style="width: 100px">
+                        <span>Amount:</span>
+                    </div>
+                    <div style="width: 300px">
+                        <span>Acct:</span>
+                    </div>
+                </div>
+                <div class="tblRow">
+                    <div>
+                        <input type="text" id="txtText">
+                    </div>
+                    <div>
+                        <input type="number" id="txtAmount">
+                    </div>
+                    <div>
+                        <select id="ddAccount">
+                            <option value="0"></option>
+                            <option value="1">Büromaterial</option>
+                            <option value="2">Internetgebühren</option>
+                            <option value="3">Fahrzeugkosten</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="tbl" style="padding-bottom: 10px">
+                    <div class="tblRow">
+                        <div style="width: 100%">
+                            <span>Comment:</span>
+                        </div>
+                    </div>
+                    <div class="tblRow">
+                        <div style="width: 100%">
+                            <textarea rows="4" cols="20" id="txtAreaComment" style="width:99.5%;"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="div-left-margin">
+                <div>
+                    <ul class="action-nav">
+                        <li>
+                            <a>New</a>
+                            <a>Save</a>
+                            <a>Remove</a>                            
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="div-left-margin">
+                <div>
+                    <table cellspacing="0" cellpadding="4" id="tblVoucherDetails" style="color: #333333; width: 100%; border-collapse: collapse;">
+                        <colgroup>
+                            <col style="width: 40%"/>
+                            <col style="width: 15%" />
+                            <col style="width: 40%" />
+                            <col style="width: 5%" />
+                        </colgroup>
+                        <thead>
+                        <tr style="color: Black; background-color: #ECECEC; font-weight: normal;">
+                            <th align="left" scope="col">Text</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">AccountID</th>
+                            <th scope="col">&nbsp;</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>

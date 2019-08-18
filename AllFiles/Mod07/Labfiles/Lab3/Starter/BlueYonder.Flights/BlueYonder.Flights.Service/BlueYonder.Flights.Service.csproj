@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App"  Version="2.1.1" />
+    <!--<PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.1" /> -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="StackExchange.Redis" Version="1.2.6" />
+   
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BlueYonder.Flights.DAL\BlueYonder.Flights.DAL.csproj" />
+  </ItemGroup>
+
+</Project>

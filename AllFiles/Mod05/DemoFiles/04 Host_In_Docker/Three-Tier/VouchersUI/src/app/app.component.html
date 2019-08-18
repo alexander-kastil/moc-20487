@@ -1,0 +1,13 @@
+<div fxLayout="column" fxLayoutGap="15px" class="masterContainer">
+  <app-navbar></app-navbar>
+  <div fxLayout="row" fxLayoutGap="1vw" class="mainScreen">
+    <div [fxFlex]="getMainFlex()">
+      <router-outlet></router-outlet>
+    </div>
+    <div [fxFlex]="'22vw'" fxHide.lt-md="true" [fxHide]="isDemo" class="sidebox">
+      <app-side-panel></app-side-panel>
+      <router-outlet name="sidebarOutlet"></router-outlet>
+    </div>
+  </div>
+  <app-kpi-bar class="kpibar"></app-kpi-bar>
+</div>

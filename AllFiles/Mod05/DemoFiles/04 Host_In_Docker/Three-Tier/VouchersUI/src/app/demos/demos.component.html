@@ -1,0 +1,22 @@
+<div fxLayout="row" fxLayoutGap="15px" [MatchHeight]="'panelBox'">
+    <div>
+        <mat-toolbar color="accent">
+            <mat-toolbar-row>
+                <span class="toolbarHeading">{{title}}</span>
+            </mat-toolbar-row>
+        </mat-toolbar>
+        <div class='panelBox demoMenu'>
+            <a *ngFor="let item of demos" [routerLink]="['', item.url]" [queryParams]="{title: item.title}">{{item.title}}</a>
+        </div>
+    </div>
+    <div class='demoWorkbench'>
+        <mat-toolbar color="accent">
+            <mat-toolbar-row>
+                <span class="toolbarHeading">{{demoName}}</span>
+            </mat-toolbar-row>
+        </mat-toolbar>
+        <div class="workbench panelBox">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

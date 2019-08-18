@@ -1,0 +1,55 @@
+.section{
+    margin: 10px 0px 10px 0px;
+    padding: 15px 10px;    
+    border: 1px solid $mediumBackground;
+    background-color: $lightBackground;
+}
+
+.sidebox{
+    background-color: $boxBackground;
+}
+
+.sideCommands {
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
+    margin: 20px;    
+}
+
+.panelBox {
+    background-color: $boxBackground;
+    padding: 20px;
+}
+
+.cmdPanel{
+    padding: 10px 10px;  
+    color: $boxBackground;
+    background-color: $darkBackground;
+}
+
+.cmdPanelSmall{
+    padding: 5px;
+    margin: 10px 0px;
+    color: $boxBackground;
+    background-color: $darkBackground;
+}
+
+//Well
+
+.well {
+    @include small-header;
+    min-height: 40px;
+    padding: 19px;
+    margin-bottom: 20px;
+    background-color: $lightBackground;
+    border: 2px solid $mediumBackground;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+
+    &:hover{
+        color: white;
+        background-color: $mediumBackground;
+        border: 2px solid $darkBackground;
+    }
+}

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<publishData>
+  <publishProfile profileName="blueyondermod08lab2xandi - Web Deploy" publishMethod="MSDeploy" publishUrl="blueyondermod08lab2xandi.scm.azurewebsites.net:443" msdeploySite="blueyondermod08lab2xandi" userName="$blueyondermod08lab2xandi" userPWD="LPWwjye5Kyqi4kBZjG6jxYHSyjSrJ7aonidisAHwn8EpsHMNaCNlin2QiyBv" destinationAppUrl="http://blueyondermod08lab2xandi.azurewebsites.net" SQLServerDBConnectionString="" mySQLDBConnectionString="" hostingProviderForumLink="" controlPanelLink="http://windows.azure.com" webSystem="WebSites">
+    <databases />
+  </publishProfile>
+  <publishProfile profileName="blueyondermod08lab2xandi - FTP" publishMethod="FTP" publishUrl="ftp://waws-prod-am2-123.ftp.azurewebsites.windows.net/site/wwwroot" ftpPassiveMode="True" userName="blueyondermod08lab2xandi\$blueyondermod08lab2xandi" userPWD="LPWwjye5Kyqi4kBZjG6jxYHSyjSrJ7aonidisAHwn8EpsHMNaCNlin2QiyBv" destinationAppUrl="http://blueyondermod08lab2xandi.azurewebsites.net" SQLServerDBConnectionString="" mySQLDBConnectionString="" hostingProviderForumLink="" controlPanelLink="http://windows.azure.com" webSystem="WebSites">
+    <databases />
+  </publishProfile>
+</publishData>

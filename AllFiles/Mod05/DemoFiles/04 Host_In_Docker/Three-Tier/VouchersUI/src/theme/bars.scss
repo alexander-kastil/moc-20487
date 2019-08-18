@@ -1,0 +1,44 @@
+//Navbar
+
+.mainNav{
+    background-color: $darkBackground;
+    min-height: 5vh;
+}
+
+.navTitle{
+    color: $contrast;
+    font-size: 22px;
+}
+
+.navLink{
+    font-size: 18px;
+    color: whitesmoke;
+    @include mouse;  
+
+    &:hover{
+        text-decoration: underline;
+    }
+}
+
+.navLink-active{
+    color: $contrast;    
+}
+
+//Toolbar
+
+.toolbarHeading{
+    color: $darkBackground;
+    font-weight: bold;      
+}
+
+//KPI
+
+.kpibar{
+    height: 5vh;
+}
+
+.kpiEntry{
+    font-size: 18px;
+    color: white;
+    @include mouse;  
+}

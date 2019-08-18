@@ -1,0 +1,48 @@
+<mat-card fxLayout="column" fxLayoutGap="10px">
+  <button mat-raised-button color="accent" (click)="logIn()">
+    Login using Azure AD
+  </button>
+</mat-card>
+
+<mat-card fxLayout="column" fxLayoutGap="10px">
+  <button mat-raised-button color="accent" (click)="getRecentFiles()">
+    Get Recent One Drive Files
+  </button>
+  <div class="files" *ngIf="recentFiles">
+    <div *ngFor="let f of recentFiles" class="items">
+      <span>{{ f.remoteItem.name }}</span
+      ><span>{{ f.remoteItem.createdDateTime | date: "long" }}</span>
+    </div>
+  </div>
+</mat-card>
+
+<mat-card fxLayout="column" fxLayoutGap="10px">
+  <mat-form-field>
+    <input matInput placeholder="Event Title" [(ngModel)]="evt.Subject" />
+  </mat-form-field>
+  <mat-form-field>
+    <textarea
+      matInput
+      placeholder="What is it about"
+      [(ngModel)]="evt.Body.Content"
+    ></textarea>
+  </mat-form-field>
+  <mat-form-field>
+    <input
+      matInput
+      [matDatepicker]="picker"
+      placeholder="Choose a date"
+      [(ngModel)]="evt.Start.DateTime"
+    />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+  <button mat-raised-button color="accent" (click)="createEvent()">
+    Create Event in your Outlook Calendar
+  </button>
+</mat-card>
+<a
+  href="https://docs.microsoft.com/en-us/graph/api/overview?view=graph-rest-1.0"
+  target="_blank"
+  >Microsoft Graph API Documentation</a
+>

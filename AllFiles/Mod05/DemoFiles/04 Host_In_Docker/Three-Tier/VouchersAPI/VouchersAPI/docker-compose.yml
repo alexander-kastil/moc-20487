@@ -1,0 +1,26 @@
+version: "2.1"
+
+services:
+  vouchersapi:
+    # image: vouchersapi
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:5000
+    networks:
+      - vouchers-network
+    depends_on:
+      - sqllinux
+  sqllinux:
+    image: microsoft/mssql-server-linux
+    ports:
+      - 1433:1433
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "TiTp4SQL@dmin"
+    networks:
+      - vouchers-network
+networks:
+  vouchers-network:
+    driver: bridge

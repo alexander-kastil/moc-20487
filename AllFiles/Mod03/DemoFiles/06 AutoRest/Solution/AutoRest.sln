@@ -1,0 +1,65 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26124.0
+MinimumVisualStudioVersion = 15.0.26124.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoRest.Host", "AutoRest.Host\AutoRest.Host.csproj", "{7528B6A9-A081-491C-A7B0-8859A377B32A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoRest.Sdk", "AutoRest.Sdk\AutoRest.Sdk.csproj", "{3C0DB024-8135-47F1-A215-583A8C33FE38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoRest.Client", "AutoRest.Client\AutoRest.Client.csproj", "{A7A24815-ED4E-4E27-98F5-1336358A3DCB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7528B6A9-A081-491C-A7B0-8859A377B32A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7528B6A9-A081-491C-A7B0-8859A377B32A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7528B6A9-A081-491C-A7B0-8859A377B32A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7528B6A9-A081-491C-A7B0-8859A377B32A}.Debug|x64.Build.0 = Debug|Any CPU
+		{7528B6A9-A081-491C-A7B0-8859A377B32A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7528B6A9-A081-491C-A7B0-8859A377B32A}.Debug|x86.Build.0 = Debug|Any CPU
+		{7528B6A9-A081-491C-A7B0-8859A377B32A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7528B6A9-A081-491C-A7B0-8859A377B32A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7528B6A9-A081-491C-A7B0-8859A377B32A}.Release|x64.ActiveCfg = Release|Any CPU
+		{7528B6A9-A081-491C-A7B0-8859A377B32A}.Release|x64.Build.0 = Release|Any CPU
+		{7528B6A9-A081-491C-A7B0-8859A377B32A}.Release|x86.ActiveCfg = Release|Any CPU
+		{7528B6A9-A081-491C-A7B0-8859A377B32A}.Release|x86.Build.0 = Release|Any CPU
+		{3C0DB024-8135-47F1-A215-583A8C33FE38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C0DB024-8135-47F1-A215-583A8C33FE38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C0DB024-8135-47F1-A215-583A8C33FE38}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3C0DB024-8135-47F1-A215-583A8C33FE38}.Debug|x64.Build.0 = Debug|Any CPU
+		{3C0DB024-8135-47F1-A215-583A8C33FE38}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3C0DB024-8135-47F1-A215-583A8C33FE38}.Debug|x86.Build.0 = Debug|Any CPU
+		{3C0DB024-8135-47F1-A215-583A8C33FE38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C0DB024-8135-47F1-A215-583A8C33FE38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C0DB024-8135-47F1-A215-583A8C33FE38}.Release|x64.ActiveCfg = Release|Any CPU
+		{3C0DB024-8135-47F1-A215-583A8C33FE38}.Release|x64.Build.0 = Release|Any CPU
+		{3C0DB024-8135-47F1-A215-583A8C33FE38}.Release|x86.ActiveCfg = Release|Any CPU
+		{3C0DB024-8135-47F1-A215-583A8C33FE38}.Release|x86.Build.0 = Release|Any CPU
+		{A7A24815-ED4E-4E27-98F5-1336358A3DCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7A24815-ED4E-4E27-98F5-1336358A3DCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7A24815-ED4E-4E27-98F5-1336358A3DCB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A7A24815-ED4E-4E27-98F5-1336358A3DCB}.Debug|x64.Build.0 = Debug|Any CPU
+		{A7A24815-ED4E-4E27-98F5-1336358A3DCB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A7A24815-ED4E-4E27-98F5-1336358A3DCB}.Debug|x86.Build.0 = Debug|Any CPU
+		{A7A24815-ED4E-4E27-98F5-1336358A3DCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7A24815-ED4E-4E27-98F5-1336358A3DCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7A24815-ED4E-4E27-98F5-1336358A3DCB}.Release|x64.ActiveCfg = Release|Any CPU
+		{A7A24815-ED4E-4E27-98F5-1336358A3DCB}.Release|x64.Build.0 = Release|Any CPU
+		{A7A24815-ED4E-4E27-98F5-1336358A3DCB}.Release|x86.ActiveCfg = Release|Any CPU
+		{A7A24815-ED4E-4E27-98F5-1336358A3DCB}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D2FBF1D5-1D66-41A2-B5B4-F29A2232A9CD}
+	EndGlobalSection
+EndGlobal

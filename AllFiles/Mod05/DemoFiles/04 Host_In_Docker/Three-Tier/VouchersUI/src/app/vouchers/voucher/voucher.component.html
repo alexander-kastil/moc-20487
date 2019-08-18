@@ -1,0 +1,64 @@
+<div fxLayout="column" >
+    <mat-toolbar color="accent">
+        <mat-toolbar-row>
+            <div fxFlex="70">
+                <span class="toolbarHeading">Voucher Number {{voucher.ID}}</span>
+            </div>
+            <div fxFlex="30" class="rightCell">
+                <button mat-fab routerLink="/vouchers"><mat-icon fxFlexAlign="center" class="cmdIcon">replay</mat-icon></button>
+                <button mat-fab (click)="saveVoucher()"><mat-icon fxFlexAlign="center" class="cmdIcon">save</mat-icon></button>
+            </div>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    <form [formGroup]="voucherForm" class="form" fxLayout="row" fxLayout.lt-md="column" fxFlexFill >
+
+        <div fxFlex="20" fxFlexAlign="center" fxFlexAlign.lt-lg="start">
+            <mat-radio-group class="form-radio-group" formControlName="Expense">
+                <mat-radio-button class="form-radio-button" [value]="true">
+                    Expense
+                </mat-radio-button>
+                <mat-radio-button class="form-radio-button" [value]="false">
+                    Income
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+
+        <div fxFlex="35">
+            <mat-form-field class="form-default-width">
+                <input matInput formControlName="Text" size="40" type="text" placeholder="Text:">               
+            </mat-form-field>
+            <em *ngIf="violatesMinLenght()">
+                Text is required (minimum 4 characters).
+            </em>
+        </div>
+
+        <div fxFlex="20">
+            <mat-form-field class="form-default-width">
+                <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="Date">
+                <mat-datepicker-toggle matSuffix [for]="picker">
+                    <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+                </mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        </div>
+
+        <div fxFlex="15">
+            <mat-form-field class="form-default-width">
+                <input matInput formControlName="Amount" size="40" type="number" placeholder="Amount:">
+            </mat-form-field>
+        </div>
+
+        <div fxFlex="10" fxFlexAlign="center">
+            <mat-slide-toggle formControlName="Paid">Paid</mat-slide-toggle>
+        </div>
+    </form>
+
+    <div fxLayout="row" fxFlexFill>
+        <app-voucher-details-list [details]="voucher==undefined?null:voucher.Details" (detailSelected)="selectDetail($event)" (detailAdd)="addDetail()" (detailDeleted)="deleteDetail($event)" fxFill></app-voucher-details-list>
+    </div>
+
+    <div *ngIf="currentDetail!=undefined" fxLayout="row" >
+        <app-voucher-detail [detail]="currentDetail" [accounts]="accounts" (detailSaved)="saveDetail($event)" fxFill></app-voucher-detail>
+    </div>
+</div>

@@ -1,0 +1,280 @@
+# Module 1: Overview of Service and Cloud Technologies
+
+# Lab: Exploring the Work Environment
+
+1. Wherever a path to a file starts with _[Repository Root]_, replace it with the absolute path to the folder in which the 20487 repository resides.
+   For example, if you cloned or extracted the 20487 repository to **C:\Users\John Doe\Downloads\20487**, change the path: **[Repository Root]\AllFiles\20487D\Mod01** to **C:\Users\John Doe\Downloads\20487\AllFiles\20487D\Mod01**.
+2. Wherever _{YourInitials}_ appears, replace it with your actual initials. (For example, the initials for John Doe will be jd.)
+3. Before performing the demonstration, you should allow some time for the provisioning of the different Microsoft Azure resources required for the demonstration. You should review the demonstrations before the actual class, identify the resources, and prepare them beforehand to save classroom time.
+
+### Exercise 1: Creating an ASP.NET Core Project
+
+#### Task 1: Create a new ASP.NET Core project
+
+1. Open a Command Prompt window.
+2. Create a new **ASP.NET Core Web API** project. At the command prompt, paste the following command, and then press Enter.
+   ```bash
+   dotnet new webapi --name BlueYonder.Flights --output [Repository Root]\Allfiles\Mod01\Labfiles\Exercise1\Starter\BlueYonder.Flights
+   ```
+3. After the project is created, change the folder at the command prompt by running the following command:
+   ```bash
+   cd [Repository Root]\Allfiles\Mod01\Labfiles\Exercise1\Starter\BlueYonder.Flights
+   ```
+
+### Exercise 2: Creating a Simple Entity Framework Model
+
+#### Task 1: Create a new POCO entity
+
+1. To use **Entity Framework Core**, you need to install the following package using the command prompt.
+   ```base
+   dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version=2.1.1
+   dotnet restore
+   ```
+2. Open the project in **VSCode** and paste the following command, and then press Enter.
+   ```bash
+   code .
+   ```
+3. The **BlueYonder.Flights** folder opens in **VSCode**. Select the **Startup.cs** file.
+   - Select **Yes** to the **Required assets to build and debug are missing from 'BlueYonder.Flights'. Add them?** message.
+   - Select **Restore** to the **There are unresolved dependencies** message.
+4. Right-click the File Explorer pane on the left, select **New Folder**, and then name the folder **Models**.
+5. Right-click the **Models** folder, select **New File**, and then name it **Flight.cs**.
+6. In the **Flight.cs** file, paste the following **using** statement below the beginning of the file:
+   ```cs
+    using System;
+   ```
+7. To create the **Flight** class model, paste the following code in the **Flight.cs** file:
+   ```cs
+    namespace BlueYonder.Flights.Models
+    {
+        public class Flight
+        {
+            public int Id { get ;set; }
+            public string Origin { get; set; }
+            public string Destination { get; set; }
+            public string FlightNumber { get; set; }
+            public DateTime DepartureTime { get; set; }
+        }
+    }
+   ```
+
+#### Task 2: Create a new DbContext class
+
+1. Right-click the **Models** folder, select **New File**, and then name it **FilghtsContext.cs**.
+2. At the top of the **FilghtsContext** file, paste the following **using** statement:
+   ```cs
+    using Microsoft.EntityFrameworkCore;
+   ```
+3. To add a new **namespace** class, paste the following code:
+
+   ```cs
+    namespace BlueYonder.Flights.Models
+    {
+
+    }
+   ```
+
+4. To declare that **FlightsContext** was inherited from the **DbContext** class, inside the **namespace** brackets, paste the following code:
+
+   ```cs
+   public class FlightsContext : DbContext
+   {
+
+   }
+   ```
+
+5. Inside the class, paste the following code:
+
+   ```cs
+    public FlightsContext(DbContextOptions<FlightsContext> options)
+        : base(options)
+    {
+    }
+
+    public DbSet<Flight> Flights { get; set; }
+   ```
+
+6. Go to **Startup.cs** and paste the following **using** statements:
+   ```cs
+    using BlueYonder.Flights.Models;
+    using Microsoft.EntityFrameworkCore;
+   ```
+7. In the **ConfigureServices** method, paste the following code:
+   ```cs
+    services.AddDbContext<FlightsContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
+   ```
+
+### Exercise 3: Creating a Web API Class
+
+#### Task 1: Create a new class for the web API
+
+1. Expand the **Controllers** folder, and then rename **ValuesControllers.cs** to **FlightsController.cs**.
+2. Open the **FlightsController.cs** file, and then rename the **ValuesController** class to **FlightsController**.
+3. Add the following **using** statement:
+   ```cs
+    using BlueYonder.Flights.Models;
+   ```
+4. To hold **FlightContext**, add the following field to the class:
+   ```cs
+    private readonly FlightsContext _context;
+   ```
+5. To inject the context to the controller, add the following **Constructor** to the class:
+   ```cs
+    public FlightsController(FlightsContext context)
+    {
+        _context = context;
+    }
+   ```
+
+#### Task 2: Create an action and use the Entity Framework context
+
+1. To retrieve the list of all flights, replace the first **Get** method with the following code:
+   ```cs
+    // GET api/flights
+    [HttpGet]
+    public IEnumerable<Flight> Get()
+    {
+        return _context.Flights.ToList();
+    }
+   ```
+2. To create a new flight to db, replace the **Post** method with the following code:
+   ```cs
+    // POST api/flights
+    [HttpPost]
+    public IActionResult Post([FromBody]Flight flight)
+    {
+        _context.Flights.Add(flight);
+        _context.SaveChanges();
+        return CreatedAtAction(nameof(Get), flight.Id);
+    }
+   ```
+
+### Exercise 4: Deploying the Web Application to Azure
+
+#### Task 1: Create an Azure Web App and an SQL database
+
+1. Open Microsoft Edge.
+2. Navigate to **https://portal.azure.com**.
+3. If a page appears asking for your email address, enter your email address, click **Next**, enter your password, and then click **Sign In**.
+4. If the **Stay signed in?** dialog box appears, click **Yes**.
+   > **Note**: During the sign-in process, if a page appears prompting you to choose from a list of previously used accounts, select the account that you previously used, and then continue to provide your credentials.
+5. To display all the **App Services**, on the left menu panel, click **App Services**.
+   - To select the app service template, in the **App Services** blade, click **Add**.
+   - To see an overview of the template, in the **Web** blade, click **Web App + SQL**.
+   - In the **Web App + SQL** blade, click **Create**.
+6. To create the **WebApp**, enter the following fields:
+   - In the **App Name** box, enter the web app name **flightsmod1lab\***YourInitials\*.
+     > **Note**: The **App Name** will be part of the URL.
+   - In **Resource Group**, select **Create new**, and then enter **Mod1Resource**.
+   - Click **SQL Database**, click **Create a new database**, open the **SQL Database** blade, and then fill the following information:
+     - In the **Name** box, type **Mod1DB**.
+     - Click **Target server**, and then click **Create a new server**.
+     - In the **New server** blade, enter the following information:
+       - In the **Server name** box, enter **serverdbmod1\***YourInitials\*.
+       - In the **Server admin login** box, type **Admin123**.
+       - In the **Password** and **Confirm password** boxes, type **Password99**.
+       - Click **Select**.
+     - Click **Pricing tier**, select **Free**, and then click **Apply**.
+     - Click **Select**.
+   - Click **Create**.
+7. To display all the SQL databases, on the left menu panel, click **SQL Databases**.
+8. To run the scripts in the database, click **Mod1DB**, then click **Query editor(preview)**.
+9. Click **Login**, enter the following password **Password99** and then click **OK**.
+10. To create a new table in **SQL Database**, inside the **Query 1** tab, paste the following script, and then click **Run**:
+
+    ```sql
+    CREATE TABLE [dbo].[Flights](
+    [Id] [int] IDENTITY(1,1) NOT NULL,
+    [Origin] [varchar](50) NOT NULL,
+    [Destination] [varchar](50) NOT NULL,
+    [FlightNumber] [varchar](50) NOT NULL,
+    [DepartureTime] [date] NOT NULL,
+
+    PRIMARY KEY CLUSTERED
+    (
+        [Id] ASC
+    ))
+    ```
+
+    > Note: Make sure your test your solution locally befoe deploying it. Sample Connection String for SQL Express: `"Server=.\SQLEXPRESS;Database=DBNAME;Trusted_Connection=True;"`
+
+#### Task 2: Deploy the web application to the Azure Web App
+
+1. Switch to Azure Portal.
+2. To display all the app services, on the left menu, click **App Services**.
+3. To view app service configurations, in the **App Services** blade, click **filghtsmod1lab\***YourInitials\*.
+   > **Note**: If your unsaved edits will be discarded dialog box appears click **OK**.
+4. To add credentials to the app service, under the **DEPLOYMENT** section, click **Deployment credentials**, and then fill the following information:
+   - In **FTP/deployment username**, enter **FTPMod1Lab\***YourInitials\*.
+   - In the **Password** and **Confirm password** boxes, type **Password99**.
+   - Click **Save**.
+     > **Note**: The **Deployment credentials** gives the options to deploy the app from the command line.
+5. Switch to the project in **VSCode**.
+6. right-click the File Explorer pane on the left, select **New Folder**, and then name the folder **Properties** .
+7. Right-click the **Properties** folder, select **New Folder**, and then name the folder **PublishProfiles**.
+8. In **PublishProfiles**, add the **Azure.pubxml** file, and then double-click the file.
+9. Paste the following code:
+   ```xml
+   <Project>
+       <PropertyGroup>
+         <PublishProtocol>Kudu</PublishProtocol>
+         <PublishSiteName>flightsmod1lab{YourInitials}</PublishSiteName>
+         <UserName>FTPMod1Lab{YourInitials}</UserName>
+         <Password>Password99</Password>
+       </PropertyGroup>
+   </Project>
+   ```
+   > **Note**: This file has the information to deploy to Azure with **Deployment credentials** that we added in Step 4.
+10. At the command prompt, paste the following command:
+    ```bash
+    dotnet publish /p:PublishProfile=Azure /p:Configuration=Release
+    ```
+    > **Note**: If an error occors during the publishing process, restart the **flightsmod1lab{YourInitials}** app services.
+
+#### Task 3: Test the web API
+
+1. Open **PowerShell**.
+2. To add a flight to the database, paste the following command:
+   ```bash
+   $postParams = "{'origin': 'Germany',
+       'destination': 'France',
+       'flightNumber': 'GF7625',
+       'departureTime': '0001-01-01T00:00:00'}"
+   Invoke-WebRequest -Uri http://flightsmod1lab{YourInitials}.azurewebsites.net/api/flights -ContentType "application/json" -Method POST -Body $postParams
+   ```
+   > **Note**: If there is an error, try to run the following command **[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12**, and then try again.
+3. Open Microsoft Edge.
+4. Browse to the following url:
+   ```
+   https://flightsmod1lab{YourInitials}.azurewebsites.net/api/flights
+   ```
+5. Check that you get the following result:
+   ```javascript
+   [
+     {
+       id: 1,
+       origin: "Germany",
+       destination: "France",
+       flightNumber: "GF7625",
+       departureTime: "0001-01-01T00:00:00"
+     }
+   ];
+   ```
+
+#### Task 4: View result in the database
+
+1. Switch to Azure Portal.
+2. on the left menu panel, Click **SQL Databases**.
+3. Click **Mod1DB**, and then click **Query editor(preview)**.
+4. Click **Login**, and then type the password **Password99**.
+5. To get all the flights in the database, paste the following script inside the **Query 1** tab, and then click **Run**:
+   ```sql
+   select * from Flights
+   ```
+6. Check that you get the flight in the **Results** tab.
+
+©2018 Microsoft Corporation. All rights reserved.
+
+The text in this document is available under the [Creative Commons Attribution 3.0 License](https://creativecommons.org/licenses/by/3.0/legalcode), additional terms may apply. All other content contained in this document (including, without limitation, trademarks, logos, images, etc.) are **not** included within the Creative Commons license grant. This document does not provide you with any legal rights to any intellectual property in any Microsoft product. You may copy and use this document for your internal, reference purposes.
+
+This document is provided &quot;as-is.&quot; Information and views expressed in this document, including URL and other Internet Web site references, may change without notice. You bear the risk of using it. Some examples are for illustration only and are fictitious. No real association is intended or inferred. Microsoft makes no warranties, express or implied, with respect to the information provided here.

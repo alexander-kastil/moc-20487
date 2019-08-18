@@ -1,0 +1,16 @@
+@mixin mouse {
+  cursor: pointer;
+}
+
+@mixin big-font {
+  font-size: 18px;
+}
+
+@mixin small-header {
+  font-size: 14px;
+}
+
+@mixin box {
+  padding: 10px;
+  margin: 10px;
+}

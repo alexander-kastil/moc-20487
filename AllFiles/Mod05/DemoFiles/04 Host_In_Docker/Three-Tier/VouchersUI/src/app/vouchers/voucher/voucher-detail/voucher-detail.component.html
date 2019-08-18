@@ -1,0 +1,51 @@
+<div fxLayout="column">
+    <mat-toolbar color="accent">
+        <mat-toolbar-row>
+            <div fxFlex="70">
+                <span class="toolbarHeading">{{detail.Text}}</span>
+            </div>
+            <div fxFlex="30" class="rightCell">                
+                <button mat-fab (click)="saveDetail()"><mat-icon fxFlexAlign="center" class="cmdIcon">save</mat-icon></button>
+            </div>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    <div class="form">
+
+        <div fxLayout="row" fxLayout.lt-md="column" fxFlexFill>
+
+            <div fxFlex="40">
+                <mat-form-field class="form-default-width">
+                    <input matInput [(ngModel)]="detail.Text" size="200" type="text" placeholder="Text:">
+                </mat-form-field>
+            </div>
+
+            <div fxFlex="20">
+
+                <mat-form-field class="form-default-width">
+                    <input matInput [(ngModel)]="detail.Amount" size="15" type="number" placeholder="Amount:">
+                </mat-form-field>
+            </div>
+
+            <div fxFlex="40">
+
+                <mat-form-field class="form-default-width-r">
+                    <mat-select [(ngModel)]="detail.AccountID" placeholder="Account">
+                        <mat-option *ngFor="let a of accounts" [value]="a.ID">{{a.Name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+            </div>
+        </div>
+
+        <div fxLayout="row" fxLayout.lt-md="column" fxFlexFill>
+
+            <mat-form-field class="form-full-width">
+                <textarea matInput [ngModel]="detail.Comment" placeholder="Comment" rows="4"></textarea>
+            </mat-form-field>
+
+        </div>
+
+    </div>
+
+</div>

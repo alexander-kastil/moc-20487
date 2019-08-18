@@ -1,0 +1,22 @@
+<h1 mat-dialog-title>Hi {{data.name}}</h1>
+<div mat-dialog-content>
+  <p>Do you want to exchange:</p>
+  <mat-form-field>
+    <input type="number" matInput [(ngModel)]="data.amount">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-select placeholder="Choose Currency" [(value)]="selectedCurrency" (selectionChange)="calculate()">
+      <mat-option *ngFor="let curr of currencies" [value]="curr" >
+        {{ curr }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div>
+    The rate for {{selectedCurrency}} is {{rate}}<br>
+    {{data.amount}} {{selectedCurrency}} will give you {{ converted | currency:'€'}} 
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="converted" cdkFocusInitial>Convert</button>
+</div>

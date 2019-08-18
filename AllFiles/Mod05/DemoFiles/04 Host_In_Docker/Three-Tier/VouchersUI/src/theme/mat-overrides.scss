@@ -1,0 +1,20 @@
+@import 'style-vars';
+
+.mat-card-title {
+    display: block;
+    margin-bottom: 8px !important;
+}
+
+.mat-fab:hover {
+    background-color: #A1887F;    
+}
+
+.mat-toolbar-row {
+    display: flex;
+    box-sizing: border-box;
+    padding: 5px 10px !important;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    white-space: nowrap;
+}

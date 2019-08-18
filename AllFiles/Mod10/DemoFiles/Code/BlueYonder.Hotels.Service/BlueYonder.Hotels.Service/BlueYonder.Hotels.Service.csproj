@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>4de0a2a6-9cfc-4dc0-b36f-ad00549a52d5</UserSecretsId>
+    <ApplicationInsightsResourceId>/subscriptions/fb948cec-8234-411e-b612-4045aca046f1/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/BlueYonder.Hotels.Service</ApplicationInsightsResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/fb948cec-8234-411e-b612-4045aca046f1/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/BlueYonder.Hotels.Service</ApplicationInsightsAnnotationResourceId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+</Project>

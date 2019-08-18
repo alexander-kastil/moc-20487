@@ -1,0 +1,24 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row>
+        <div fxFlex="30" fxHide.lt-lg="true">
+            <span class="toolbarHeading">Actions</span>
+        </div>
+        <div fxFlex="70">
+            <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="15px">
+                <button mat-fab (click)="showUpload()">
+                    <mat-icon fxFlexAlign="center" class="cmdIcon">cloud_upload</mat-icon>
+                </button>
+                <button mat-fab (click)="toggleEditor()">
+                    <mat-icon fxFlexAlign="center" class="cmdIcon">create</mat-icon>
+                </button>
+            </div>
+        </div>
+    </mat-toolbar-row>
+</mat-toolbar>
+<div class="sideCommands">
+    <div *ngFor="let c of cmds" class="item">
+        <div fxLayout="row" class="toolbarHeading" (click)="dispatchAction(c.action)">            
+            <button mat-button><mat-icon fxFlexAlign="center">{{c.icon}}</mat-icon> <span>{{c.title | uppercase}}</span></button>
+        </div>
+    </div>
+</div>

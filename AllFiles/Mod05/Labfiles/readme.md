@@ -1,0 +1,651 @@
+# Module 5: Hosting Services On-Premises and in Azure
+
+# Lab: Host an ASP.NET Core service in a Windows Service
+
+1. Wherever a path to a file starts at *[Repository Root]*, replace it with the absolute path to the directory in which the 20487 repository resides. For example, you cloned or extracted the 20487 repository to **C:\Users\John Doe\Downloads\20487**, change the path: [Repository Root]**\AllFiles\20487D\Mod01 to C:\Users\John Doe\Downloads\20487\AllFiles\20487D\Mod01**.
+2. Wherever *{YourInitials}* appears, replace it with your actual initials. For example, the initials for **John Doe** will be **jd**.
+3. Before performing the demonstration, you should allow some time for the provisioning of the different Microsoft Azure resources required for the demonstration. You should review the demonstrations before the actual class, identify the resources, and then prepare them beforehand to save classroom time.
+
+
+### Exercise 1: Creating an ASP.NET Core Application
+
+#### Task 1: Create an ASP.NET Core application project
+
+1. Open the Command Prompt window as an administrator.
+   > **Note**: If User Account control dialog box appears click **Yes**.
+2. To create a new **ASP.NET Core Web API** project, at the command prompt, paste the following command, and then press Enter:
+    ```bash
+    dotnet new webapi --name BlueYonder.Flights.Service --output [Repository Root]\Allfiles\Mod05\Labfiles\Exercise1\Starter\BlueYonder.Flights.Service
+    ```  
+3. After the project is created, at the command prompt, change the directory by running the following command, and then press Enter:
+    ```bash
+    cd [Repository Root]\Allfiles\Mod05\Labfiles\Exercise1\Starter\BlueYonder.Flights.Service
+    ```    
+4. To open the project in Microsoft Visual Studio Code, paste the following command, and then press Enter: 
+    ```bash
+    code .
+    ```
+5. Right-click the **Explorer** pane on the left, and select **New Folder**, and then name the new folder **Models**.   
+6. Open File Explorer and in **[Repository Root]\Allfiles\Mod05\Labfiles\Exercise1\Assets**, navigate to the **Assets** folder.
+7. Copy **Flight.cs** class and paste in to the **Models** folder you just created.
+8. Go back to the **Assets** folder.
+9. Copy **FlightsController.cs** class and paste in to the **Controllers** folder.
+10. In the **Explorer** blade, under the **BLUEYONDER.FLIGHTS.SERVICE** pane, double-click the **BlueYonder.Flights.Service.csproj** class.
+11. Locate the last **\<PropertyGroup>** section.
+12. Below the **TargetFramework** tag, add **\<RuntimeIdentifier>win7-x64\</RuntimeIdentifier>**.
+    >**Note**: After this change, your **\<PropertyGroup>** section should look as follows:
+
+    ```cs
+          <PropertyGroup>
+            <TargetFramework>netcoreapp2.1</TargetFramework>
+            <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
+          </PropertyGroup>
+    ```
+13. To save the file, press Ctrl+S.
+
+#### Task 2: Install the Microsoft.AspNetCore.Hosting.WindowsServices NuGet package
+
+1. At the command prompt, change the directory by running the following command, and then press Enter:
+    ```bash
+    cd [Repository Root]\Allfiles\Mod05\Labfiles\Exercise1\Starter\BlueYonder.Flights.Service
+    ```    
+2. To install the **Microsoft.AspNetCore.Hosting.WindowsServices** NuGet package that allows you to run the **ASP.NET Core** project as a Windows service, at the command prompt, paste the following commands, and then press Enter:
+    ```bash
+    dotnet add package Microsoft.AspNetCore.Hosting.WindowsServices --version 2.1.1
+    ```
+#### Task 3: Modify the Main method to use Kestrel RunAsService hosting
+
+1. Go back to the open instance of Visual Studio Code.
+    >**Note**: If you do not have it open, paste the following command, and then press Enter:
+
+    ```bash
+    code .
+    ```
+2. In the **Explorer** blade, under the **BLUEYONDER.FLIGHTS.SERVICE** pane, double-click on the **Program.cs** class.
+3. Locate a **using** list at the of the class and after **using Microsoft.Extensions.Logging;**, press Enter.
+4. Paste the following **using** on a new line:
+    ```cs   
+    using Microsoft.AspNetCore.Hosting.WindowsServices;
+    ```    
+5. Change the **Main** method implementation as follows:
+    ```cs
+    CreateWebHostBuilder(args).Build().RunAsService();
+    ```
+6. Verify that after these two changes your **Program.cs** class looks as follows:
+    ```cs
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.AspNetCore.Hosting.WindowsServices;
+
+    namespace BlueYonder.Hotels.Service
+    {
+        public class Program
+        {
+            public static void Main(string[] args)
+            {
+                CreateWebHostBuilder(args).Build().RunAsService();
+            }
+
+            public static IWebHost BuildWebHost(string[] args) =>
+                WebHost.CreateDefaultBuilder(args)
+                    .UseStartup<Startup>()
+                    .Build();
+        }
+    }
+    ```
+7. To save the **Program.cs** class, press Ctrl+S.
+
+### Exercise 2: Registering the Windows Service
+
+#### Task 1: Register the Windows Service
+
+1. Open the Command Prompt window as administrator.
+2. At the command prompt, change the directory by running the following command, and then press Enter:
+    ```bash
+    cd [Repository Root]\Allfiles\Mod05\Labfiles\Exercise1\Starter\BlueYonder.Flights.Service
+    ```    
+3. To publish your **ASP .NET Core** project into a folder, paste the following command, and then press Enter:
+    ```bash
+      dotnet publish --configuration Release --output [Repository Root]\Allfiles\Mod05\Labfiles\Exercise1\Starter\BlueYonder.Flights.Service\svc
+    ```
+4. To create your Windows service, paste the following command, and then press Enter:
+    ```bash
+      sc create FlightsService binPath= "[Repository Root]\Allfiles\Mod05\Labfiles\Exercise1\Starter\BlueYonder.Flights.Service\svc\BlueYonder.Flights.Service.exe"
+    ```
+
+
+
+#### Task 2: Start the Windows Service and test it
+
+1. To start your Windows service, paste the following command, and then press Enter:
+    ```bash
+      sc start FlightsService
+    ```
+2. To verify that the service is working, open a browser and navigate to **http://localhost:5000/api/flights**.
+   > **Note**: If there is **certificate error issue**, click on **details** and the Click **Go on to the webpage**.
+3. Verify whether you are getting the expected response just as the following:
+    ```json
+    [{"id":1,"origin":"Australia","destination":"China","flightNumber":"20487DD","departureTime":"2018-01-01T00:00:00"},{"id":2,"origin":"New-York","destination":"Paris","flightNumber":"20487D","departureTime":"2018-02-02T00:00:00"}]
+    ```
+  
+4. To stop your Windows service, at the command prompt, paste the following command, and then press Enter:
+    ```bash
+      sc stop FlightsService
+    ```
+5. Open a browser and navigate to **http://localhost:5000/api/flights**.
+6. Verify that you are not getting the expected response.
+7. Close all your opened windows.
+
+
+# Lab: Host an ASP.NET Core Web API in an Azure Web App
+
+### Exercise 1: Creating a Web App in the Azure Portal
+
+#### Task 1: Run a setup script to upload a database to Azure
+
+1. On the **Start** menu, search for and right-click **PowerShell**, and then select **Run as Administrator**.
+2. In the **User Account Control** modal, click **Yes**.
+3. Run the **Install-Module azurerm -AllowClobber -MinimumVersion 5.4.1** command.
+   > **Note**: If prompted for trust this repository type **A** and then press **Enter**.
+4. Change the directory in PowerShell by running the following command, and then press Enter:
+    ```bash
+      cd [Repository Root]\Allfiles\Mod05\Labfiles\Exercise2\HostInAzure\Setup
+    ```
+5. Run the following command:
+    ```bash
+      .\createAzureSQL.ps1
+    ```
+    > **Note**: If your getting an error saying that PowersShell files is not digitally signed, Run the following command: **Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass**
+
+    > **Note**: If prompted for **Do you want to change the execution policy?** type **Y** and then press **Enter**.
+
+    > **Note**: Write down the connection string that is written to console and use it in `Task 3, Step 8`
+
+6. You will be asked to provide a **Subscription ID**, which you can get by performing the following steps:
+    1. Open a browser and navigate to **http://portal.azure.com**. If a page appears asking for your email address, enter your email address, and then click **Continue**. Wait for the sign-in page to appear, enter your email address and password, and then click **Sign In**.
+    2. In the search box on the top bar, type **Cost** and in the results page, click **Cost Management + Billing(Preview)**. The **Cost Management + Billing** window opens.
+    3. Under **Individual Billing**, click **Subscriptions**.
+    4. Under **My subscriptions**, you should have at least one subscription. Click the subscription that you want to use.
+    5. Copy the value from **Subscription ID**, and then paste it at the PowerShell command prompt. 
+    6. In the **Sign in** window that appears, enter your details, and then sign in.
+    7. In the **Administrator: Windows PowerShell** window, enter your initials when prompted.    
+
+
+#### Task 2: Create a free website
+
+1. Open a browser and navigate to **http://portal.azure.com**. If you are prompted to, sign in by using your Azure account credentials.
+2. In the **Navigation** blade, click **App Services**. 
+3. To create a new App Service, in the top menu, click **+Add**.
+4. Inside the **Web** blade, from the **Web Apps** section, select **Web App**, and then click **Create**.
+5. In the **App name** box, enter the following unique name:
+     ```
+        blueyonder-flights-{Your Initials}.
+     ```
+    >**Note**: Replace **{Your Initials}** with your actual initials and copy the **App name** value to any code editor.
+    
+6. In the **Resource Group** box, select **Use existing**, and then from the **Resource Group** list, select **BlueYonder.Lab.05**.
+7. Click **App service plan/Location**, and then click **Create new**.        
+8. In the **App Service plan** box, type **MyFlightAppService**.
+9.  Click the **Pricing tier** box, select **F1**, and then click **Apply**.
+10. In the **New App Service Plan** blade, click **OK**.
+11. To create your new web app, click **Create**. Wait for the web app to be created.
+
+#### Task 3: Configure an environment variable and the database connection string
+
+1. Click the new web app **blueyonder-flights-{Your Initials}**.
+2. In the **SETTINGS** section, click **Application settings**.
+3. On the **Application settings** blade, scroll down to the **Application settings** section.
+4. Click **+Add new setting**.
+5. Add a new setting with the key named **BLUEYONDER_TENANT** and the value as **Testing**. 
+	>**Note**: This setting will be used later to test HTTP requests.
+6. Locate the **Connection strings** section.
+7. Click **+Add new connection string**.
+8. Add a new setting with the key named **dbConnectionString** and the following value:
+	```
+	Server=tcp:blueyonder05-{Your Initials}.database.windows.net,1433;Initial Catalog=BlueYonder.Flights.Lab05;Persist Security Info=False;User ID=BlueYonderAdmin;Password=Pa$$w0rd;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+	```
+	>**Note**: Replace **{Your Initials}** with your actual initials.
+9. In the top menu, click **Save**.
+
+#### Task 4: Configure IIS logs	
+
+1. In the **Deployment** section of your web app, click **Deployment Center**, select **FTP** and then click **Dashboard**.
+2. In the **FTP** pane click **User Credentials**, in the **username** box, enter a globally unique name.
+3. In the **Password** and **Confirm password** boxes, enter a new password.
+
+    >**Note:** You will need the credentials for the next steps. Copy them to any code editor.
+	
+![ftp-cred](./_images/ftp-credentials.png)
+
+4. In the top menu, click **Save Credentials**.
+5. In your **Web App** menu, in the **MONITORING** menu, click **Diagnostics logs**.
+6. Set the **Application Logging (Filesystem)** option to **On**.
+7. Set the level to **Verbose**.
+8. Set **Failed request tracing** to **On**, and then in the top menu, click **Save**.
+9. On **Web server logging** option, choose **File System** with **Retention Period (Days)** of **21** days and then click **Save**.
+10. Scroll up and click **Overview**.
+11. Copy the **FTP host name** value to any code editor.
+
+   >**Note**: You will need it in the next exercise.
+
+
+### Exercise 2: Deploying an ASP.NET Core Web API to the Web App
+
+#### Task 1: Deploy an ASP.NET Core project to the web app
+
+1. Open File Explorer and browse to the **[Repository Root]\Allfiles\Mod05\LabFiles\Exercise2\HostInAzure\BlueYonder.Flights.Service\Properties\PublishProfiles** folder.
+2. Open the **Azure.pubxml** file with any code editor.
+3. Replace the **PublishSiteName** with the actual app name that you copied from the previous exercise (in Task 2, step 7).
+4. Replace the **UserName** and **Password** values with the values that you have copied from the previous exercise (in Task 4, step 3).
+5. To save the file, press Ctrl+S.
+6. Open the Command Prompt window.
+7. To point to your new web app folder, at the command prompt, paste the following command and then press Enter:
+    ```bash
+	cd [RepositoryRoot]\Allfiles\Mod05\LabFiles\Exercise2\HostInAzure\BlueYonder.Flights.Service
+    ```
+8. To host your web app in the App Service that you have created in Azure, paste the following command:
+    ```bash
+	dotnet publish /p:PublishProfile=Azure /p:Configuration=Release
+    ```
+9. Wait until the publish completes.
+
+#### Task 2: Test and verify the web app uses the database and environment variable
+
+1. Open PowerShell.
+2. To make an HTTP request to your Web App, paste the following command and then press Enter:
+    ```ps
+      Invoke-WebRequest https://{Your App Name}.azurewebsites.net/api/flights
+    ```
+    > **Note**: Replace **{Your App Name}** with your actual app name that you have copied earlier.
+
+    > **Note**: If there any error regarding invoke web request run the following command then try to run the command again:
+    **[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12**
+
+3. Check that you are getting the **"X-Tenant-ID"** header with the value of **Testing**.
+
+![header](./_images/custom-header.png)
+
+
+#### Task 3: Use the FTP Deployment server to view the web app and its log files
+
+1. Open a new PowerShell instance.
+2. to make a bad HTTP request to your web app, paste the following command, and then press Enter:
+    ```ps
+       Invoke-WebRequest https://{Your App Name}.azurewebsites.net
+    ```
+    > **Note**: If there any error regarding invoke web request run the following command then try to run the command again:
+    **[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12**
+
+    >**Note**: Replace **{Your App Name}** with your actual app name that you copied earlier.
+
+3. Open a browser and navigate to the FTP hostname address that you copied from the previous exercise (in Task 4, step 8).
+   > **Note**: If we are getting an error in **Edge** browser , you can try on **chrome** browser.
+4. Sign in with the FTP username and password that you copied from the previous exercise (in Task 4, step 3).
+    >**Note**: The **Username** in this case should be **blueyonder-flights-**{Your Initials}**\\{Your Username}**.
+5. Click the **LogFiles\\** folder.
+6. Locate and click the **W3SVC#########** folder.
+    >**Note**: Make sure that you select the folder with the latest **Date Modified** value.<br/>
+    This folder contains an XSL file and one or more XML files for **Failed Request Traces**.
+7. Click the latest .xml file.
+    **Note**: This file contains your last failed HTTP request that you performed at the PowerShell command prompt.
+8. Review this log file:
+    1. In the **Request Summary** section, you can see all the details about the request (URL, Authentication, etc.).
+    2. In the **Errors & Warnings** section, you can see the details about the response (ErrorCode, HTTPStatus, etc.).
+
+
+    >**Comment**: Practically I would do this using Kudu
+
+    The Kudu Url is the App Service Url with `scm` after your App Service Name
+
+    Example:  `https://mod5ex2.scm.azurewebsites.net`
+
+    ![Kudu](./_images/kudu.png)
+
+
+9.  Open a PowerShell instance.
+10. To login to your Azure account, paste the following command, and then press Enter:
+    ```ps
+     Add-AzureAccount
+    ```
+    > **Note**: If prompted for only run scripts from trusted publishers type **R** and then press **Enter**.
+
+    > **Note**: If requested, login with your Azure credentials.
+11. To start streaming logs into the PowerShell instance, paste the following command:
+    ```ps
+     Get-AzureWebsiteLog -Name blueyonder-flights-{Your Initials} -Tail -Path http
+    ```
+    >**Note**: Replace **{Your Initials}** with your actual initials.
+12. Open another PowerShell instance.
+    >**Note**: Do not close the last one.
+13. To see a log in the other PowerShell instance, paste the following command, and then press Enter:
+    ```ps
+     Invoke-WebRequest http://blueyonder-flights-{Your Initials}.azurewebsites.net
+    ```        
+    > **Note**: If there any error regarding invoke web request run the following command then try to run the command again:
+    **[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12**
+
+    >**Note**: The logs update every minute.<br/>
+    Verify that you are getting a log with log ID, PowerShell information, URL, etc.<br/>
+    You can see the status code **404** at the end of the log.
+14. To see another log in the other PowerShell instance, paste the following command, and then press Enter:
+    ```ps
+     Invoke-WebRequest http://blueyonder-flights-{Your Initials}.azurewebsites.net/api/flights
+    ```     
+    > **Note**: If there any error regarding invoke web request run the following command then try to run the command again:
+    **[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12**
+
+    >**Note**: The difference between these two logs is the URL details and the status code (now it is 200).
+15. Close all the open windows.    
+
+# Lab: Host an ASP.NET Core service in Azure Container Instances 
+
+### Exercise 1: Publishing the service to a Docker container
+
+#### Task 1: Create a Dockerfile for the service
+
+1. Open the Command Prompt window.
+2. To change the directory to the **BlueYonder.Hotels.Service** folder, at the command prompt, run the following command:
+    ```bash
+    cd [Repository Root]\AllFiles\Mod05\Labfiles\Exercise3\Starter\BlueYonder.Hotels.Service\BlueYonder.Hotels.Service
+    ```
+3. To open the project in Microsoft Visual Studio Code, run the following command: 
+    ```bash
+    code .
+    ```
+4. In the **EXPLORER** panel, right-click the **BlueYonder.Hotels.Service** area, select **New File**, and then name it **DockerFile**
+5. To download a base docker image for **ASP.NET CORE** and define docker settings for your **BlueYonder.Hotels.Service** project, open the new **DockerFile** and, paste the following docker commands:
+    ```
+    FROM microsoft/dotnet:2.1-aspnetcore-runtime AS base
+    WORKDIR /app
+
+    EXPOSE 55419
+    EXPOSE 44398
+
+    FROM microsoft/dotnet:2.1-sdk AS build
+    WORKDIR /src
+    COPY ./BlueYonder.Hotels.Service.csproj ./
+    RUN dotnet restore ./BlueYonder.Hotels.Service.csproj
+    COPY . .
+    WORKDIR /src/.
+    RUN dotnet build BlueYonder.Hotels.Service.csproj -c Release -o /app
+
+    FROM build AS publish
+    RUN dotnet publish BlueYonder.Hotels.Service.csproj -c Release -o /app
+
+    FROM base AS final
+    WORKDIR /app
+    COPY --from=publish /app .
+    ENTRYPOINT ["dotnet", "BlueYonder.Hotels.Service.dll"]
+    ```
+6. Switch the Command Prompt window.
+7. At the command prompt, to locate your project folder, paste the following command, and then press Enter:
+    ```bash
+        cd [Repository Root]\AllFiles\Mod05\Labfiles\Exercise3\Starter\BlueYonder.Hotels.Service
+    ```
+8. To build your project by using **DockerFile** that you have created earlier, paste the following command, and then press Enter:
+    ```bash
+        docker build -t hotels_service -f .\DockerFile .
+    ```
+9.  To run the docker container which is listening on a default port, paste the following command, and then press Enter:
+    ```bash
+    	docker run --rm -it -p 8080:80 hotels_service
+    ```
+10. Open a browser and navigate to **localhost:8080/api/hotels**.
+11. Check that you are getting the expected response such as the following:
+    ```json
+     [{"id":1,"hotelName":"Leonardo","address":"Jones Street 259, Manhattan","stars":5.0,"isFullyBooked":false},		             {"id":2,"hotelName":"Dan","address":"Bleecker Street 23, Manhattan","stars":3.5,"isFullyBooked":true}]
+    ```
+
+#### Task 2: Push the container to a public container registry
+
+1. Run **Docker Client** on your machine and login using your **Docker Hub** credentials.
+2. Open the Command Prompt window.
+3. To sign in to Docker Hub by using a command line, at the command prompt, paste the following command:
+    ```bash
+        docker login
+    ```
+    >**Note**: Enter your Docker Hub username and password, and then press Enter.
+
+4. To create a tag name for your docker image in Docker Hub, at the command prompt, paste the following command, and then press Enter:
+    >**Note**: Replace the *{Your Docker Hub Username}* variable with your actual Docker Hub username.
+    ```bash
+        docker tag hotels_service {Your Docker Hub Username}/hotels_service
+    ```
+5. To push your container image into Docker Hub, paste the following command, and then press Enter:
+
+    >**Note**: Replace the *{Your Docker Hub Username}* variable with your actual Docker Hub username.
+    ```bash
+        docker push {Your Docker Hub Username}/hotels_service
+    ```
+6. Open a browser and navigate to **https://hub.docker.com**, and then sign in with your credentials.
+7. On the **Repositories** page, verify that you are seeing the last push as {Your Docker Hub UserName}**/hotels_service**.
+
+
+### Exercise 2: Hosting the service in Azure Container Instances
+
+#### Task 1: Create a Resource Group for Azure Container Instances
+
+1. Open the Azure command prompt (Azure CLI) window.
+2. To sign in to your Azure account, run the following command, and then press Enter:
+    ```bash
+    az login
+    ```
+3. Write the code that you have got from the command prompt in **https://microsoft.com/devicelogin**, and then click **Continue**.
+4. To create a new **Resource Group** called **blueyonder-hotels**, run the following command, and then press Enter:
+    ```bash
+    az group create -l eastus -n blueyonder-hotels
+    ```        
+
+#### Task 2: Create an Azure Container Instance from the container image
+
+1. To create a new **container** instance using the previously created **Docker container** for the hotel's service, run the following command:
+    ```bash
+     az container create --resource-group blueyonder-hotels --name hotels-container-{Your Initials} --image {Your Docker Hub Username}/hotels_service --dns-name-label blueyonder-hotels-service-{Your Initials} --ports 80
+    ```   
+    >**Note**: Replace **{Your Initials}** with your actual initials and replace **{Your Docker Hub Username}** with your actual Docker Hub username.
+
+2. To get details of your container instance, run the following command, and then press Enter:
+    ```bash
+    az container list
+    ```
+3. Inside the **"ipAddress"** object, locate the **"ip"** property and copy its value.
+4. Paste the **IP address** in your browser's address bar, add **/api/hotels** to it, and then press Enter.
+    >**Note**: Your URL should look like the following:<br/>
+               {Container's IP Adress}**/api/hotels**
+5. Check that you are getting the expected response just as the following:
+    ```json
+    [{"id":1,"hotelName":"Leonardo","address":"Jones Street 259, Manhattan","stars":5.0,"isFullyBooked":false},{"id":2,"hotelName":"Dan","address":"Bleecker Street 23, Manhattan","stars":3.5,"isFullyBooked":true}]
+    ```
+6. Close all the open windows.
+
+
+# Lab: Implement an Azure Function 
+
+### Exercise 1: Developing the Service Locally
+
+#### Task 1: Create a new Function App project in Visual Studio
+
+1. Open the Command Prompt window.
+2. At the command prompt, change the directory by pasting the following command, and then press Enter:
+    ```bash
+    cd [RepositoryRoot]\AllFiles\Mod05\Labfiles\Exercise4
+    ```
+3.  Install the following package:
+    ```bash
+        npm i -g azure-functions-core-tools@core --unsafe-perm true
+    ```  
+4.  To create a local Functions project, paste the following command:
+    ```bash
+        func init BlueYonder.Flights.GroupProxy -n --worker-runtime dotnet
+    ```
+5.  To change the directory to the newly created function project folder, paste the following command, and then press Enter:
+    ```bash
+        cd BlueYonder.Flights.GroupProxy
+    ```
+6.  To open the project in Visual Studio Code, paste the following command, and then press Enter: 
+    ```bash
+    code .
+    ```
+7. Right-click the **BlueYonder.Flights.GroupProxy** folder, point to **Add**, and then seelect **New File**.
+8.  In the **File name** box, enter **Traveler.cs**, and then click **Enter**.
+9.  In **Traveler.cs**, paste the following code:
+    ```bash
+    using System;
+
+    namespace BlueYonder.Flights.GroupProxy
+    {
+       public class Traveler
+       {
+    	  public int TravelerId { get; set; }
+          public string FirstName { get; set; }
+          public string LastName { get; set; }
+          public string MobilePhone { get; set; }
+          public string Passport { get; set; }
+          public string Email { get; set; }
+       }
+    }
+    ```
+10. To create a new Azure function for your new Functions project, paste the following command, and then press Enter:
+    ```bash
+    func new --name BookFlightFunc
+     ```
+11.  In **Select a template**, select **HttpTrigger**.
+
+>**Comment:** As alternative you can install the [Azure Functions](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions) extension, which is a wrapper around the Node package
+
+![funct-ext](./_images/function-apps.png)
+
+
+#### Task 2: Implement an HTTP trigger that invokes the flights booking Web App
+
+1. In your new **BookFlightFunc** class, locate the **using** assemblies, and then after the last **using** which is **Newtonsoft.Json**, press Enter.
+2. In the new line after **using Newtonsoft.Json**, add the following **using** assemblies:
+    ```
+    using System.Net.Http;
+    using System.Text;
+    using System.Collections.Generic;
+    ```
+3. Replace all the **Run** method implementations with the following code that makes a request to the **Flights booking** web app, which you have created in Lab 2:
+    ```cs
+    public static IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)]HttpRequest req, TraceWriter log)
+        {
+            return (ActionResult)new OkObjectResult($"Request to book flight was sent successfully");
+
+            log.Info("C# HTTP trigger function processed a request to the flights booking service.");
+
+            var flightId = req.Query["flightId"];
+
+             var flightServiceUrl = $"http://blueyonder-flights-{Your Initials}.azurewebsites.net/api/flights/bookFlight?flightId={flightId}";
+            
+            log.Info($"Flights service url: {flightServiceUrl}");
+
+            var travelers = new List<Traveler>
+             {
+                 new Traveler { Email = "204837Dazure@gmail.com" , FirstName = "Jonathan", LastName = "James", MobilePhone = "+61 0658748", Passport = "204837DCBA" },
+                 new Traveler { Email = "204837Dfunction@gmail.com", FirstName = "James", LastName = "Barkal", MobilePhone = "+61 0658355", Passport = "204837DCBABC" }
+             };
+
+            var travelersAsJson = JsonConvert.SerializeObject(travelers);
+
+            using (var client = new HttpClient())
+            {
+                client.PostAsync(flightServiceUrl,
+                                 new StringContent(travelersAsJson,
+                                                   Encoding.UTF8,
+                                                   "application/json")).Wait();
+            }
+
+            return (ActionResult)new OkObjectResult($"Request to book flight was sent successfully");
+        }
+    ```
+    >**Note**: Replace *{Your Initials}* in the **flightServiceUrl** with your actual initials.
+
+#### Task 3: Test the Function App locally in a browser
+
+1.  to test the new Azure function locally, paste the following command, and then press Enter:
+    ```bash
+        func host start --build
+    ```
+2. Open a browser and navigate to **http://localhost:7071/api/BookFlightFunc?flightId=1**.
+3. Check whether you are getting the expected response such as the following:
+    ```
+    Request to book flight was sent successfully
+    ```
+1. To check whether the travelers were actually booked to flight number 1, open a browser and navigate to **http://blueyonder-flights-{YourInitials}.azurewebsites.net/api/flights**.
+
+    >**Note**: Replace *{Your Initials}* with your actual initials.
+
+2. Check whether you are getting the expected response such as the following:
+    ```json
+    [{"flightId":1,"origin":"New York","destination":"Paris","flightNumber":"204837D","departureTime":"2018-10-10T00:00:00","travelers":[{"travelerId":1,"firstName":"Jonathan","lastName":"James","mobilePhone":"+61 0658748","passport":"204837DCBA","email":"204837Dazure@gmail.com"},{"travelerId":2,"firstName":"James","lastName":"Barkal","mobilePhone":"+61 0658355","passport":"204837DCBABC","email":"204837Dfunction@gmail.com"}]},{"flightId":2,"origin":"Paris","destination":"Rome","flightNumber":"204837C","departureTime":"2017-10-10T00:00:00","travelers":[]}]
+    ```    
+
+
+### Exercise 2: Deploying the Service to Azure Functions
+
+#### Task 1: Deploy the service to Azure Functions from Visual Studio
+
+1. Open a browser and navigate to the Azure Portal.
+2. If a page appears asking for your email address, enter your email address, and then click **Continue**. Wait for the sign-in page to appear, enter your email address and password, and then click **Sign In**.
+
+    >**Note**: During the sign-in process, if a page appears asking you to choose from a list of previously used accounts, select the account that you previously used, and then continue to provide your credentials.
+
+3. If the **Windows Azure Tour** dialog box appears, click **X** (the close button).
+4. In the navigation blade, click **Create a resource**.
+5. In the **New** window, select **Compute**, and then select **Function App**.
+6. In the **Function App** blade, in the **App name** box, enter a globally unique name.
+    >**Note**: Save the app name in any code editor. You will need it when publishing the new Azure function to Azure.
+7. From the **Location** list, select the region that is closest to your location.
+8. Set **Application Insights** to **Off**.
+9. Click **Create**. Wait for the Functions app to be created.
+10. Open the Command Prompt window.
+11. At the command prompt, change the directory by pasting the following command, and then press Enter:
+    ```bash
+        cd [RepositoryRoot]\AllFiles\Mod05\Labfiles\Exercise4\BlueYonder.Flights.GroupProxy
+    ```
+12. To test the new Azure function locally, paste the following command. and then press Enter:
+    ```bash
+        func host start --build
+    ```
+13. To sign in to Azure with your credentials before publishing the new Azure function to Azure, paste the following command, and then press Enter:
+    ```bash
+        az login
+    ```
+    >**Note**: You will get the following message: **To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code** {some code} **to authenticate​**. Follow the instructions to sign in with your username and password.
+14. To publish your new Azure function into Azure, paste the following command, and then press Enter:
+    ```bash
+        func azure functionapp publish {Your App name}
+    ```             
+    >**Note**: Replace **{Your App name}** with your actual app name in Azure that you wrote in previous step.
+    
+#### Task 2: Test the Function App on Azure in a browser 
+
+1. Open a browser and navigate to **https://{Your App Name}.azurewebsites.net/api/BookFlightFunc?flightId=1**.
+    >**Note**: Replace **{Your App Name}** with your App name.
+2. Check whether you are getting the expected response such as the following:
+	```cs
+    Request to book flight was sent successfully
+    ```
+3. To check whether the travelers were actually booked to flight number 1, open a browser and navigate to **http://blueyonder-flights-{YourInitials}.azurewebsites.net/api/flights**.
+
+    >**Note**: Replace **{Your Initials}** with your actual initials.
+
+4. Check whether you are getting the expected response such as the following:
+    ```json
+    [{"flightId":1,"origin":"New York","destination":"Paris","flightNumber":"204837D","departureTime":"2018-10-10T00:00:00","travelers":[{"travelerId":1,"firstName":"Jonathan","lastName":"James","mobilePhone":"+61 0658748","passport":"204837DCBA","email":"204837Dazure@gmail.com"},{"travelerId":2,"firstName":"James","lastName":"Barkal","mobilePhone":"+61 0658355","passport":"204837DCBABC","email":"204837Dfunction@gmail.com"},{"travelerId":3,"firstName":"Jonathan","lastName":"James","mobilePhone":"+61 0658748","passport":"204837DCBA","email":"204837Dazure@gmail.com"},{"travelerId":4,"firstName":"James","lastName":"Barkal","mobilePhone":"+61 0658355","passport":"204837DCBABC","email":"204837Dfunction@gmail.com"}]},{"flightId":2,"origin":"Paris","destination":"Rome","flightNumber":"204837C","departureTime":"2017-10-10T00:00:00","travelers":[]}]
+    ```
+    >**Note**: You are seeing the same travelers that you had added earlier (locally) but with different **Traveler IDs**.
+5. Close all open windows.
+   
+©2018 Microsoft Corporation. All rights reserved.
+
+The text in this document is available under the [Creative Commons Attribution 3.0 License](https://creativecommons.org/licenses/by/3.0/legalcode), additional terms may apply. All other content contained in this document (including, without limitation, trademarks, logos, images, etc.) are **not** included within the Creative Commons license grant. This document does not provide you with any legal rights to any intellectual property in any Microsoft product. You may copy and use this document for your internal, reference purposes.
+
+This document is provided &quot;as-is.&quot; Information and views expressed in this document, including URL and other Internet Web site references, may change without notice. You bear the risk of using it. Some examples are for illustration only and are fictitious. No real association is intended or inferred. Microsoft makes no warranties, express or implied, with respect to the information provided here.

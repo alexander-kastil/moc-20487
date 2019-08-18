@@ -1,0 +1,10 @@
+<mat-toolbar color="accent">
+  <span class="toolbarHeading">Upload</span>
+</mat-toolbar>
+
+<form #form="ngForm" novalidate class="sideCommands">
+  <input #file type="file" multiple (change)="upload(file.files)" />
+  <span *ngIf="uploadProgress > 0 && uploadProgress < 100">
+    {{ uploadProgress }}%
+  </span>
+</form>

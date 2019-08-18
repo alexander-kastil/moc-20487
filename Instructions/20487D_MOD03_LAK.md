@@ -1,0 +1,244 @@
+# Module 3: Creating and Consuming ASP.NET Core Web APIs 
+
+# Lab: Creating an ASP.NET Core Web API
+
+1. Wherever a path to a file starts with *[Repository Root]*, replace it with the absolute path to the folder in which the 20487 repository resides. 
+ For example, if you cloned or extracted the 20487 repository to **C:\Users\John Doe\Downloads\20487**, change the path: **[Repository Root]\AllFiles\20487D\Mod01** to **C:\Users\John Doe\Downloads\20487\AllFiles\20487D\Mod01**.
+2. Wherever *{YourInitials}* appears, replace it with your actual initials. (for example, the initials for John Doe will be jd).
+3. Before performing the demonstration, you should allow some time for the provisioning of the different Microsoft Azure resources required for the demonstration. You should review the demonstrations before the actual class, identify the resources, and then prepare them beforehand to save classroom time.
+
+
+### Exercise 1: Create a controller class
+
+#### Task 1: Add a controller class
+
+1. Open a Command Prompt window.
+2. To change the directory to the **Starter** project, run the following command:
+    ```bash
+    cd [Repository Root]\Allfiles\Mod03\LabFiles\Lab1\Starter
+    ```
+3. To restore all dependencies and tools of a project, run the following command:
+    ```bash
+    dotnet restore
+    ```
+4. To open the project in **VSCode**, run the following command: 
+    ```bash
+    code .
+    ```
+5. Add new **Controllers** folder in **BlueYonder.Hotels.Service**.
+6. To create a new **HotelBookingController** class, right-click  **Controllers**, select **New File**, and then enter **HotelBookingController.cs**.
+6. To the **HotelBookingController** class, add the following **using** statements:
+    ```cs
+    using System.Threading.Tasks;
+    using DAL.Models;
+    using DAL.Repository;
+    using Microsoft.AspNetCore.Mvc;
+    ```
+7. To add **namespace** to the class, enter the following code:
+    ```cs
+    namespace BlueYonder.Hotels.Service.Controllers
+    {
+
+    }
+    ```
+8. To add **class declaration**, inside the **namespace** brackets, enter the following code:
+   ```cs
+    [Route("api/[controller]")]
+    [ApiController]
+    public class HotelBookingController : ControllerBase
+    {
+
+    }
+   ```
+9. To add **field** to the class, inside the **class** brackets, enter the following code:
+    ```cs
+    private HotelBookingRepository repo;
+    ```
+10. To add **constructor** to the class, inside the **class** brackets, enter the following code:
+    ```cs
+    public HotelBookingController()
+    {
+        repo = new HotelBookingRepository();
+    }
+    ```
+#### Task 2: Add action methods to the controller for GET, POST, and PUT
+
+1. To add **GET** action, inside the **class** brackets, enter the following code:
+    ```cs
+    // GET api/HotelBooking/5
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Booking>> Get(int id)
+    {
+        Booking booking = await repo.GetBooking(id);
+        if (booking != null)
+            return Ok(booking);
+        else
+            return NotFound();
+    }
+    ```  
+2. To add the **POST** action, inside the **class** brackets, enter the following code:
+   ```cs
+    // POST api/HotelBooking
+    [HttpPost]
+    public async Task<ActionResult> Post([FromBody] Booking booking)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        Booking BookingDb = await repo.Add(booking);
+        if (BookingDb != null)
+            return Ok(BookingDb);
+        else
+            return StatusCode(500);
+    }
+   ```
+3. To add the **PUT** action, inside the **class** brackets, enter the following code:
+   ```cs
+    // PUT api/HotelBooking/1
+    [HttpPut("{id}")]
+    public async Task<ActionResult<Booking>> Put(int id, [FromBody] Booking booking)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        Booking updatedBooking = await repo.Update(booking);
+        return Ok(updatedBooking);
+    }
+   ```
+### Exercise 2: Use the API from a browser
+
+#### Task 1: Use a browser to access the GET action
+
+1. Switch to the Command Prompt window.
+2. To change the directory to the **BlueYonder.Hotels.Service** project, run the following command:
+    ```bash
+    cd [Repository Root]\Allfiles\Mod03\LabFiles\Lab1\Starter\BlueYonder.Hotels.Service
+    ```
+3. To run the service, run the following command:
+    ```bash
+    dotnet run
+    ```
+4. Open a browser, and navigate to the following URL:
+   ```url
+   http://localhost:5000/api/HotelBooking/1
+   ```
+   >**Note**: If there is an error in the Console after running the application, run the following command dotnet **dev-certs https --trust**.
+5. Verify that the **Booking** reservation with **Booking Id: 1** appears.
+6. To Stop the Application, in command prompt, Press **Ctrl+C**.
+7. Close all windows.
+
+### Exercise 3: Create a client
+
+#### Task 1: Create a console project and add a reference to System.Net.Http
+
+1. Switch to the Command Prompt window.
+2. To change the directory to the **Starter** project, run the following command:
+    ```bash
+    cd [Repository Root]\Allfiles\Mod03\LabFiles\Lab1\Starter
+    ```
+3. To create a new **Console Application**, run the following command:
+   ```bash
+    dotnet new console --name BlueYonder.Hotels.Client
+   ```
+4. To add the **BlueYonder.Hotels.Client** project to the solution, run the following command:
+   ```bash
+    dotnet sln Mod3Lab1.sln add BlueYonder.Hotels.Client\BlueYonder.Hotels.Client.csproj
+   ```
+5. To change the directory to the client project, run the following command:
+   ```bash
+    cd [Repository Root]\Allfiles\Mod03\LabFiles\Lab1\Starter\BlueYonder.Hotels.Client
+   ```
+6. To install the **Microsoft AspNet WebApi Client** package, run the following command:
+   ```bash
+    dotnet add package Microsoft.AspNet.WebApi.Client --version=5.2.6
+    dotnet restore
+   ```
+
+#### Task 2: Use HttpClient to call the GET and PUT actions of the controller
+
+1. To open the project in **VSCode**, run the following command:
+   ```bash
+    code .
+   ```
+2. In the **VSCode** explorer panel, expand **BlueYonder.Hotels.Client**, and then click **BlueYonder.Hotels.Client.csproj**.
+3. To add a reference the DAL class library, in **BlueYonder.Hotels.Client.csproj**, inside **\<Project\>** tag, add the following xml code:
+   ```xml
+    <ItemGroup>
+        <ProjectReference Include="..\DAL\DAL.csproj" />
+    </ItemGroup>
+   ```
+4. To working with c# 7.3 add the following code:
+   ```xml
+   <PropertyGroup>
+    <LangVersion>7.3</LangVersion>
+   </PropertyGroup>
+   ```
+5. Click the **Program.cs** file.
+6. Add the following **using** statements to the class:
+   ```cs
+    using DAL.Models;
+    using System.Net.Http;
+    using System.Threading.Tasks;
+   ```
+7. In the **Main** method, replace the method declaration with the following code:
+   ```cs
+    static async Task Main(string[] args)
+   ```   
+8. To create a new **HttpClient** instance, in the **Main** method, enter the following code:
+   ```cs
+    using (HttpClient client = new HttpClient())
+    {
+
+    }
+   ```
+9. To create a **GET** request, inside the **HttpClient** bracket, enter the following code:
+   ```cs
+    HttpResponseMessage message = await client.GetAsync("http://localhost:5000/api/HotelBooking/1");
+   ```
+10. To read the respone content as a string and print to the console, under **HttpResponseMessage**, enter the following code:
+   ```cs
+      Console.WriteLine("Getting booking:");
+      string resultAsString = await message.Content.ReadAsStringAsync();
+      Console.WriteLine(resultAsString);
+   ```
+11. To read the response content as a **Booking** entity, enter the following code:
+    ```cs
+    Booking booking = await message.Content.ReadAsAsync<Booking>();
+    ``` 
+12. To modify the entity from the server, enter the following code:
+    ```cs
+    booking.Paid = false; 
+    ```    
+13. To create a **PUT** request, enter the following code:
+    ```cs
+    message = await client.PutAsJsonAsync("http://localhost:5000/api/HotelBooking/1", booking);
+    ```
+14. To read the **PUT** respone content as a string and print to the console, enter the following code:
+    ```cs
+    resultAsString = await message.Content.ReadAsStringAsync();
+    Console.WriteLine("Booking after update:");
+    Console.WriteLine(resultAsString);
+    ```
+15. Switch to the Command Prompt window.
+16. To change the directory to **BlueYonder.Hotels.Service**, run the following command:
+    ```bash
+    cd [Repository Root]\Allfiles\Mod03\LabFiles\Lab1\Starter\BlueYonder.Hotels.Service
+    ```
+17. To run the application, run the following command:
+    ```bash
+    dotnet run
+    ```
+18. Open a new command prompt.
+19. To change the directory to **BlueYonder.Hotels.Client**, run the following command:
+    ```bash
+    cd [Repository Root]\Allfiles\Mod03\LabFiles\Lab1\Starter\BlueYonder.Hotels.Client
+    ```
+20. To run the application, run the following command:
+    ```bash
+    dotnet run
+    ```
+21. At the command prompt, verify that **Bookings** from the **GET** and the **PUT** requests are present. 
+22. Close all windows.
+
+©2018 Microsoft Corporation. All rights reserved.
+
+The text in this document is available under the [Creative Commons Attribution 3.0 License](https://creativecommons.org/licenses/by/3.0/legalcode), additional terms may apply. All other content contained in this document (including, without limitation, trademarks, logos, images, etc.) are **not** included within the Creative Commons license grant. This document does not provide you with any legal rights to any intellectual property in any Microsoft product. You may copy and use this document for your internal, reference purposes.
+
+This document is provided &quot;as-is.&quot; Information and views expressed in this document, including URL and other Internet Web site references, may change without notice. You bear the risk of using it. Some examples are for illustration only and are fictitious. No real association is intended or inferred. Microsoft makes no warranties, express or implied, with respect to the information provided here.

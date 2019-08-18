@@ -1,0 +1,25 @@
+<div class="formContainer">
+  <div>Please Log in:</div>
+
+  <mat-form-field>
+    <input
+      matInput
+      type="text"
+      placeholder="Email Address"
+      [(ngModel)]="login.email"
+    />
+  </mat-form-field>
+
+  <mat-form-field>
+    <input
+      matInput
+      type="password"
+      placeholder="Enter Password"
+      [(ngModel)]="login.pwd"
+    />
+  </mat-form-field>
+
+  <div fxLayout="row nowrap" fxLayoutGap="1.5rem">
+    <button mat-raised-button (click)="logIn()" color="accent">Log In</button>
+  </div>
+</div>

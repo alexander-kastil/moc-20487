@@ -1,0 +1,78 @@
+<div fxLayout="column">
+  <mat-toolbar color="accent">
+    <mat-toolbar-row>
+      <div fxFlex="70">
+        <span class="toolbarHeading">Vouchers</span>
+      </div>
+      <div fxFlex="30" class="rightCell">
+        <button mat-mini-fab routerLink="/vouchers/0">
+          <mat-icon fxFlexAlign="center" class="cmdIcon">add_circle</mat-icon>
+        </button>
+      </div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <mat-card>
+    <mat-form-field>
+      <input
+        matInput
+        (keyup)="applyFilter($event.target.value)"
+        placeholder="Filter"
+      />
+    </mat-form-field>
+  </mat-card>
+
+  <mat-card>
+    <mat-table #table [dataSource]="dataSource">
+      <ng-container matColumnDef="ID">
+        <mat-header-cell *matHeaderCellDef> ID</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.ID }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="Text">
+        <mat-header-cell *matHeaderCellDef> Text </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.Text }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="Date">
+        <mat-header-cell *matHeaderCellDef> Date </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.Date | date: "longDate" }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="Amount">
+        <mat-header-cell *matHeaderCellDef> Amount </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.Amount | currency: "EUR":true }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="Delete">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <a mat-mini-fab (click)="deleteVoucher(element.ID)">
+            <i class="material-icons cmdIcon">delete</i>
+          </a>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="Edit">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <a mat-mini-fab [routerLink]="['/vouchers', element.ID]">
+            <i class="material-icons cmdIcon">mode_edit</i>
+          </a>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row
+        class="clickable"
+        *matRowDef="let row; columns: displayedColumns"
+      >
+        ></mat-row
+      >
+    </mat-table>
+  </mat-card> 
+</div>

@@ -1,0 +1,22 @@
+
+
+.btn-primary {
+    color: $darkBackground;
+    background-color: $lightBackground;
+    border: 2px solid $mediumBackground;
+
+    &:hover{
+        color: white;
+        background-color: $mediumBackground !important;
+        border: 2px solid $darkBackground !important;
+    }
+}
+
+.cmdIcon{
+    color: $darkBackground; 
+    @include mouse;  
+
+    &:hover{
+        color: $lightBackground;     
+    }
+}

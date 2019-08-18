@@ -1,0 +1,571 @@
+# Module 7: Implementing data storage in Azure
+
+1. Wherever a path to a file starts with *[Repository Root]*, replace it with the absolute path to the folder in which the 20487 repository resides. 
+ For example, if you cloned or extracted the 20487 repository to **C:\Users\John Doe\Downloads\20487**, change the path: *[Repository Root]***\AllFiles\20487D\Mod01** to **C:\Users\John Doe\Downloads\20487\AllFiles\20487D\Mod01**.
+2. Wherever *{YourInitials}* appears, replace it with your actual initials. (For example, the initials for **John Doe** will be **jd**  .)
+3. Before performing the demonstration, you should allow some time for the provisioning of the different Microsoft Azure resources required for the demonstration. You should review the demonstrations before the actual class, identify the resources, and prepare them beforehand to save classroom time.
+
+# Lab: Storing Files in Azure Blob Storage 
+
+### Exercise 1: Store publicly accessible files in Microsoft Azure Blob Storage
+
+#### Task 1: Store publicly accessible files in Blob Storage
+
+1. Open the Azure portal.
+   If a page appears asking for your email address, enter your email address, click **Next**, enter your **password**, and then click **Sign In**.
+   If the Stay signed in? dialog box appears, click **Yes**.
+   >**Note**: During the sign-in process, if a page appears prompting you to choose from a list of previously used accounts, select the account that you previously used, and then continue to provide your credentials.   
+2. To display all the storage accounts, in the left pane, click **Storage accounts**.
+3. In the **Storage accounts** blade, click **+ Add**.
+4. In the **Storage account name** box, type **blueyonder**{YourInitials}.
+5. In the **Account kind** list, select **StorageV2 (general purpose v2)**.
+6. In the **Replication** list, select **Locally-redundant storage (LRS)**.
+7. In the **Resource group** section, select **Create new**, in the **Name** box, type **Mod7Lab1**, and then click **Review + Create**.
+8. On the **Create storage account** page click **Create**.
+9.  Click the **blueyonder**{YourInitials} storage account.
+10. In the left pane, in the **blueyonder**{YourInitials} blade, click **Blobs**.
+11. To create a new container, on the top bar, click **Container**, in the **Name** box, type **aircraft-images**, in the **Public access level** list, select **Container (anonymous read access for containers and blobs)**, and then click **OK**.
+
+#### Task 2: Upload  a file to the Blob Storage container from the Azure CLI
+
+1. Open the command prompt.
+2. To open the interactive sign in dialog box, run the following command: 
+   ```bash
+   az login
+   ```
+   >**Note**: Sign in with your credentials. 
+3. To get the connection string, run the following command:
+   ```bash
+   az storage account show-connection-string --name blueyonder{YourInitials} --resource-group Mod7Lab1
+   ```
+4. Copy the value from the connection string.
+5. To set the connection string as the environment variable, run the following command:
+   ```bash
+   SET AZURE_STORAGE_CONNECTION_STRING="{Paste Your Connection String}"
+   ```
+6. To upload the image to the Blob Storage container, run the following command:
+   ```bash
+    az storage blob upload --file [Repository Root]\AllFiles\Mod07\Labfiles\Lab1\Assets\france.jpg --container-name aircraft-images --name france.jpg
+   ```
+
+#### Task 3: Run a script to upload multiple aircraft images
+
+1. To get the storage account keys list, run the following command:
+   ```bash
+    az storage account keys list --account-name blueyonder{YourInitials} --resource-group Mod7Lab1
+   ```
+2. In the first object in the array, from the value property, copy the key.
+3. Open PowerShell.
+4. To change the directory to the **Assets** folder, run the following command:
+   ```bash
+    [Repository Root]\AllFiles\Mod07\Labfiles\Lab1\Assets\
+   ```
+5. To upload the images folder to the storage account, run the **uploadPhotos** script by running the following command:
+   ```bash
+    .\uploadPhotos.ps1
+   ```
+   >**Note**: If prompted for Security warning to allow the script, Type **R** and then press **Enter**.
+
+    >**Comment:** As an alternative you can use [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/)
+
+6. In the **Please enter your name** box, enter *{YourInitials}*.
+7. In the **Please enter storage account key** box, paste the key copied in step 2.
+
+#### Task 4: Modify the flight reservations service to return aircraft images from the container
+
+1. To change the directory to the **Starter** folder, run the following command:
+   ```bash
+    cd [Repository Root]\Allfiles\Mod07\Labfiles\Lab1\Starter
+   ```
+2. To open the project in Microsoft Visual Studio Code, run the following command: 
+   ```bash
+   code .
+   ```
+3. Expand **BlueYonder.Flights.Service**, expand **Controllers**, and then click **AircraftController.cs**.
+4. Locate the **_baseUrl** box, and then replace **YourInitials** with your actual initials.
+
+
+#### Task 5: Test the service from a browser
+
+1. Switch to the command prompt.
+2. To change the directory to the **BlueYonder.Flights.Service** project, run the following command:
+   ```bash
+    [Repository Root]\AllFiles\Mod07\Labfiles\Lab1\Starter\BlueYonder.Flights.Service
+   ```
+2. To run the service, run the following command:
+   ```bash
+   dotnet run
+   ```
+3. Open Microsoft Edge.
+4. Go to the following URL:
+   ```url
+    https://localhost:5001/api/aircraft/image/france
+   ```
+5. Copy the URL from the response.
+6. In Microsoft Edge, open a new tab, and then paste the copied URL.
+7. Verify that the image is shown.
+8. Switch to the command prompt.
+9. To stop the service, press Ctrl + C.
+
+### Exercise 2: Generate and Store Private Files in Blob Storage
+
+#### Task 1: Create a Blob Storage container
+
+1. Switch to the Azure portal.
+2. To display all the storage accounts, in the left pane, click **Storage accounts**.
+3. Click the **blueyonder**{YourInitials} storage account.
+4. In the left pane, in the **blueyonder**{YourInitials} blade, click **Blobs**.
+5. To create new container, on the top bar, click **Container**, in the **Name** box, type **manifests**, in the **Public access level** list, select **Private (no anonymous access)**, and then click **OK**.
+
+#### Task 2: Generate a passenger manifest and store it in the container
+
+1. Switch to the command prompt.
+2. To install the **WindowsAzure Storage** package, run the following command:
+   ```base
+   dotnet add package WindowsAzure.Storage --version=9.3.1
+   ```
+3. Switch to Visual Studio Code.
+4. Expand **BlueYonder.Flights.Service**, and then click the **appsettings.json** file.
+5. To add the connection string, locate the following code:
+   ```json
+   "ConnectionStrings": {
+       "BloggingDatabase": "{Paste Your Connection string}"
+   }
+   ```
+   > **Note**: Replace the connection string with the connection string in exercise 1, task 2, step 4.
+6. Expand **Controllers**, and then click **FlightsController.cs**.
+7. To the **FlightsController.cs** file, add the following **using** statements:
+   ```cs
+   using Microsoft.WindowsAzure.Storage.Blob;
+   using Microsoft.WindowsAzure.Storage;
+   using Microsoft.Extensions.Configuration;
+   ```
+8. Inside the class, add the following fields:
+   ```cs
+   private CloudBlobContainer _container;
+   private CloudStorageAccount _storageAccount;
+   private const string _manifests = "manifests";
+   ```
+9. To add *IConfiguration* injection as a parameter, replace the constructor with following code:
+   ```cs
+    public FlightsController(IConfiguration configuration, IPassangerRepository passangerRepository)
+    {
+         _passangerRepository = passangerRepository;
+        _storageAccount = CloudStorageAccount.Parse(configuration.GetConnectionString("BloggingDatabase"));
+        var blogClient = _storageAccount.CreateCloudBlobClient();
+        _container = blogClient.GetContainerReference(_manifests);
+    }
+    ```
+10. To upload a file to the container, locate the **FinalizeFlight** method, and then enter the following code:
+   ```cs
+    await _container.CreateIfNotExistsAsync();
+    CloudBlockBlob blockBlob = _container.GetBlockBlobReference($"{_manifests }.txt");
+    MemoryStream manifests = GeneratedManifests();
+    await blockBlob.UploadFromStreamAsync(manifests);
+    manifests.Close();
+   ```
+
+#### Task 3: Generate a shared access signature (SAS) to the passenger manifest and return it from the service
+
+1. To create an SAS token, enter the following code:
+   ```cs
+    private string GetSASToken()
+    {
+        SharedAccessAccountPolicy policy = new SharedAccessAccountPolicy()
+        {
+            Permissions = SharedAccessAccountPermissions.Read,
+            Services = SharedAccessAccountServices.Blob,
+            ResourceTypes = SharedAccessAccountResourceTypes.Object,
+            SharedAccessExpiryTime = DateTime.Now.AddMinutes(1)
+        };
+        return _storageAccount.GetSharedAccessSignature(policy);
+    }
+    ```
+2. To add the **GetPassengerManifest** action that returns the file URL with the SAS token, enter the following code:
+   ```cs
+    [HttpGet("PassengerManifest")]
+    public ActionResult<string> GetPassengerManifest()
+    {
+        CloudBlockBlob blockBlob = _container.GetBlockBlobReference($"{_manifests }.txt");
+        return Content(blockBlob.Uri.ToString() + GetSASToken());
+    }
+   ```
+3. Switch to the command prompt.
+4. To run the service, run the following command:
+   ```cd
+   dotnet run
+   ```
+5. Open Microsoft Edge.
+6. Browse to the following URL:
+   ```url
+    https://localhost:5001/api/flights/finalizeflight
+   ```
+7. Switch to the Azure portal.
+8. In the **blueyonder**{YourInitials} blade, browse to the **manifests** container.
+9. Click **Refresh**, and then verify that the **manifests.txt** file was uploaded to the container.
+10. In Microsoft Edge, open a new tab, and then go to the following URL:
+   ```url
+    https://localhost:5001/api/flights/passengermanifest
+   ```
+11. Copy the URL from the response.
+12. In Microsoft Edge, open a new tab, and then on the address bar, paste the copied URL.
+13. Verify that the **Passenger manifest** list is shown.
+14. To access the storage account with the expired SAS token, wait for one minute, and then refresh the page.
+15. Verify that the response shows an error.
+
+# Lab: Querying Graph Data with Azure Cosmos DB 
+
+### Exercise 1: Create the Cosmos DB Graph Database
+
+#### Task 1: Create a new Cosmos DB graph database in the Azure portal
+
+1. Open the Azure portal.
+2. In the left pane, click **+ Create a resource**.
+3. In the search box, type **Azure Cosmos DB**,  from the search results select **Azure Cosmos DB** and then click **Create**.
+4. In **Account Name** box, type **blueyonder-destinations**{YourInitials}.
+5. In **API**, select **Gremlin (graph)**.
+6. In **Resource Group** section, select **Create new**, in the **Name** box type **Mod07Lab2**, click **OK** and then click **Create**.
+7. Click **Review + Create**, click **Create** and then wait for the resource to be created.
+8. To display all the resources, in the left pane, click **All resources**.
+9. Click **blueyonder-destinations**{YourInitials}.
+10. On the top bar, click **+ New Graph**.
+
+11. In **Database id**, select **Create new**, and then type **blueyonder**.
+12. In **Graph Id**, type **traveler**. Use **/city** as partition key and then click **OK**.
+
+#### Task 2: Run a script to import itinerary data (flights and destinations) to the database
+
+1. In **GREMLIN API** Plane under **blueyonder** click **traveler**.
+2. To upload all the data with a JSON file, on the top bar, click **Upload**.
+3. click **folder**, in [Repository Root]**\Allfiles\Mod07\LabFiles\Lab2\Assets**, select the **GraphData.json** file, and then click **Upload**.
+4. Click **Data Explorer**, expand **blueyonder**, expand **traveler**, and then click **Graph** & **Load Graph**.
+5. To run the Gremlin query to return all the vertices, in the text box, type **g.V()**, and then click **Execute Gremlin Query**.
+   > **Note**: The graph has attractions that are connected to a city, and each city is connected to another city by flight.
+
+#### Task 3: Explore the generated database
+
+1. To see all the edges that connected from Paris, click the **Paris** vertex.
+2. To see all the attractions in Paris, under **Moscow**, double-click the small vertex.
+3. To view the result in the JSON format, click the **JSON** tab.
+4. In the text box, type **g.V('Red Square')**, and then click **Execute Gremlin Query**.
+5. View the **Moscow** vertex data. 
+6. In the text box, type **g.V('Moscow').outE('flight')**, and then click **Execute Gremlin Query**.
+7. View all the flights from Moscow.
+
+
+### Exercise 2: Query the Cosmos DB Database
+
+#### Task 1: Add a query to return related attractions from the itinerary service
+
+1. In the **SETTINGS** section, click **Keys**.
+2. For the next step, copy the **PRIMARY KEY** value.
+
+![key](./_images/gremlin.png)
+
+3. Open the command prompt.
+4. To change the directory to the **Starter** project, run the following command:
+   ```bash
+    cd [Repository Root]\Allfiles\Mod07\LabFiles\Lab2\Starter
+    ```
+5. Install the following **Gremlin.Net** package:
+   ```bash
+     dotnet add package Gremlin.Net --version=3.3.3
+   ```
+6. To open the project in Visual Studio Code, run the following command:
+   ```bash
+    code .
+   ```
+7. In Visual Studio Code on the left pane click **appsettings.json**.
+8. In **HostName**, replace *{YourInitials}* with your actual initials.
+9. In **Authkey**, paste the **PRIMARY KEY** value from step 2. 
+10. Expand **Controllers**, and then click **DestinationController.cs**.
+11. To the **DestinationController.cs** file, add the following **using** statements:
+   ```cs
+    using Gremlin.Net.Driver;
+    using Gremlin.Net.Structure.IO.GraphSON;
+   ```
+12. To add the **GremlinServer** field, enter the following code:
+   ```cs
+    private GremlinServer _gremlinServer;
+   ```
+13. To add a **Constructor**, enter the following code:
+   ```cs
+    public DestinationController(IConfiguration configuration)
+    {
+        string authKey =  configuration["Authkey"];
+        string hostname = configuration["HostName"];
+        string database = "blueyonder";
+        string collection = "traveler";
+        int port = 443;
+        _gremlinServer = new GremlinServer(hostname, port, enableSsl: true,
+                                             username: "/dbs/" + database + "/colls/" + collection,
+                                             password: authKey);
+    }
+   ```
+14. Locate the **GetAttractions** method.
+15. To query all the attractions in the destination filtered by distance, enter the following code:
+   ```cs
+    string gremlinQuery = $"g.V('{destination}').inE('located-in').has('distance', lt({distanceKm})).outV()";
+   ```
+16. To run the query, enter the following code:
+   ```cs
+    using (var client = new GremlinClient(_gremlinServer, new GraphSON2Reader(), new GraphSON2Writer(), GremlinClient.GraphSON2MimeType))
+    {
+        var result = await client.SubmitAsync<dynamic>(gremlinQuery);
+        return JsonConvert.SerializeObject(result); ;
+    }
+   ```
+
+#### Task 2: Add a query to return possible interesting stop-overs to a destination
+
+1. Locate the **GetStopOvers** method.
+2. To query all the flights from the source to the destination filtered by the maximum duration hours, enter the following code:
+   ```cs
+    string gremlinQuery = $"g.V('{source}').repeat(outE().inV().simplePath()).until(hasId('{destination}')).path().by('id').by('duration')";
+   ``` 
+3. To run the query, enter the following code:
+   ```cs
+    using (var client = new GremlinClient(_gremlinServer, new GraphSON2Reader(), new GraphSON2Writer(), GremlinClient.GraphSON2MimeType))
+    {
+        var result = await client.SubmitAsync<dynamic>(gremlinQuery);
+       
+    }
+   ```
+4. To get the flights that are shorter than the maximum duration hours, inside the bracket, enter the following code:
+   ```cs
+    var obj = result.Select(i => i["objects"]).ToList();
+    var flights = new List<List<string>>();
+    foreach (IEnumerable<dynamic> item in obj)
+    {
+        var cities = item.OfType<string>().ToList();
+        var distance = item.OfType<long>().Sum();
+        if(distance < maxDurationHours)
+        {
+            flights.Add(cities);
+        }
+    }
+    return flights;
+   ```
+
+#### Task 3: Test the new service operations from a browser
+
+1. Switch to the command prompt.
+2. To run the service, run the following command:
+   ```cd
+    dotnet run
+   ```
+3. Open Microsoft Edge.
+4. Go to the following URL:
+   ```url
+    https://localhost:5001/api/destination/attractions/Paris/4
+   ```
+5. Verify that the JSON response with attractions does not include Eiffel Tower.
+6. Go to the following URL:
+   ```url
+    https://localhost:5001/api/destination/attractions/Paris/6
+   ```
+7. Verify that the JSON response with attractions include Eiffel Tower.
+8. Go to the following URL:
+   ```url
+    https://localhost:5001/api/Destination/StopOvers/Moscow/New York/14
+   ```
+9. Verify that the JSON response includes only flights that are from Paris.
+10. Go to the following URL:
+    ```url
+    https://localhost:5001/api/Destination/StopOvers/Moscow/New York/20
+    ```
+11. Verify that the JSON response includes only flights that are from Paris and Rome.
+12. Close all open windows.
+
+# Lab: Caching Out-of-Process with Azure Redis cache
+
+### Preparation Steps
+
+1. Open PowerShell as Administrator.
+2. In the **User Account Control** modal, click **Yes**.
+3. Run the following command: **Install-Module azurerm -AllowClobber -MinimumVersion 5.4.1**.
+   >**Note**: If prompted for you trust this repository Type **A** and then press **Enter**.
+4. Browse to *[repository root]***\Mod07\Labfiles\Lab3\Setup**.
+5. Run the following command:
+   ```batch
+     .\createAzureServices.ps1
+   ```
+   >**Note**: If prompted for you trust this repository Type **R** and then press **Enter**.
+6. You will be asked to supply a subscription ID, which you can get by performing the following steps:
+    1. Open a browser and go to **http://portal.azure.com**. If a page appears, asking for your email address, enter your email address, and then click **Continue**. Wait for the sign-in page to appear, enter your email address and password, and then click **Sign In**.
+    2. On the top bar, in the search box, type **Cost**, and then, in results, click **Cost Management + Billing(Preview)**. The **Cost Management + Billing** window should open.
+    3. Under **Individual billing**, click **Subscriptions**.
+    4. Under **My subscriptions**, you should have at least one subscription. Select the subscription that you want to use.
+    5. Copy the subscription ID, and then paste it at the PowerShell prompt. 
+7. In the **Administrator: Windows PowerShell** window, follow the on-screen instructions. Wait for the deployment to complete successfully.
+8. Write down the name of the Azure App Service that is created.
+9. Close PowerShell.
+
+### Exercise 1: Create the Azure Redis Cache Service
+
+#### Task 1: Create the Azure Redis Cache service
+
+1. Open Microsoft Edge.
+2. Go to **https://portal.azure.com**.
+3. If a page appears asking for your email address, enter your email address, click **Next**, enter your password, and then click **Sign In**.
+4. If the **Stay signed in?** dialog box appears, click **Yes**.
+   >**Note**: During the sign-in process, if a page appears prompting you to choose from a list of previously used accounts, select the account that you previously used, and then continue to provide your credentials.
+5. In the left pane, click **+ Create a resource**.
+6. In the search box, enter **Redis Cache**, from the search results select **Redis Cache** and then click **Create**.
+7. In **DNS name**, type **blueyonder-cache**{YourInitials}.
+8. In **Resource Group** section, select **Create new**, in the **Name** box type **Mod07Lab3**, click **OK** and then click **Create**.
+
+#### Task 2: Locate the service key 
+
+1. To display all the resources, in the left pane, click **All resources**.
+2. Click **blueyonder-cache**{YourInitials}.
+3. In the **SETTINGS** section, click **Access keys**.
+4. Copy **StackExchange.Redis**, which is the primary connection string. This is required in the next exercise.
+
+### Exercise 2: Access the Cache Service from Code
+
+#### Task 1: Install the StackExchange.Redis NuGet package
+
+1. Open the command prompt.
+2. To change the directory to the **BlueYonder.Flights.Service** service, run the following command:
+   ```bash
+    cd [Repository Root]\Allfiles\Mod07\LabFiles\Lab3\Starter\BlueYonder.Flights\BlueYonder.Flights.Service
+   ```
+3. Install the **StackExchange.Redis** package:
+   ```bash
+    dotnet add package StackExchange.Redis --version=1.2.6
+   ```
+
+#### Task 2: Configure the cache credentials
+
+1. To open the project in Visual Studio Code, run the following command:
+   ```bash
+    code .
+   ```
+2. In Visual Studio Code on the left pane click **appsettings.json** file.
+3. To add the *RedisConnectionString* parameter, enter the following code. Replace the value with the copied connection string from the previous exercise.
+   ```json
+    "RedisConnectionString": "[RedisConnectionString]"
+   ```
+   
+#### Task 3: Add code to use the cache service
+
+1. Click the **Startup.cs** file.
+2. To use the **Redis** package, to the **Startup** file, add the following **using** statements:
+   ```cs
+    using StackExchange.Redis;
+   ```
+3. Locate the **ConfigureServices** method, and then enter the following code:
+   ```cs
+    services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(Configuration["RedisConnectionString"]));
+   ```
+   >**Note**: **IConnectionMultiplexer** is injected with a connection to the Azure Redis Cache.
+   
+4. Expand **Controllers**, and then click the **FlightsController.cs** file.
+5. To use the **Redis** package, add the following **using** statements:
+   ```cs
+    using StackExchange.Redis;
+   ```
+6. To add the **IDatabase** field, enter the following code:
+   ```cs
+    private readonly IDatabase _redisDB;
+   ```
+7. To inject **IConnectionMultiplexer**, replace the constructor with the following code:
+   ```cs
+    public FlightsController(IConnectionMultiplexer connectionMultiplexer, IFlightsRepository flightsRepository)
+    {
+        _flightsRepository = flightsRepository;
+         _redisDB = connectionMultiplexer.GetDatabase();
+    }
+   ```
+8. Locate the **Get** method with the *source* and *destination* parameters.
+9. To add a key to check in the Azure Redis Cache, enter the following code:
+   ```cs
+    var key = source + destination + date.Date.ToShortDateString();
+   ```
+10. To check if the key exists in the Azure Redis Cache, enter the following code:
+   ```cs
+    var cacheResult = _redisDB.StringGet(key);
+   ```
+11. If the key does not exist, enter the following code:
+   ```cs
+    if (!cacheResult.HasValue)
+    {
+        var result = _flightsRepository.GetFlightByDate(source, destination, date);
+        if (result == null)
+            return NotFound();
+        _redisDB.StringSet(key,JsonConvert.SerializeObject(result));
+        return Ok(result);
+    }
+   ```
+   >**Note**: If the key does not exist in the Azure Redis Cache, get the data from the database, and then add a new key and data to the Azure Redis Cache.
+12. If the key exists, enter the following code:
+   ```cs
+    Request.HttpContext.Response.Headers.Add("X-Cache","true");
+    return Ok(cacheResult.ToString());
+   ```
+13. Add a header that says the data is cached and returns the data.
+
+#### Task 4: Configure the web application to disable instance affinity
+
+1. Switch to the Azure portal.
+2. In the left pane, click **App Services**.
+3. Click **blueyondermod07lab03**{YourInitials}.
+4. In the **SETTING** section, click **Scale up (App Service plan)**, select **Dev/Test**, select **B1**, and then click **Apply**. 
+5. In the **SETTING** section, click **Scale out (App Service plan)**, select **Configure**, and then change the value in the **Instance count** box to **2**.
+   >**Note**: Now there are two instances of **BlueYonder.Flights.Service**.
+6. Click **Save**.
+7. In the **SETTING** section, click **Application settings** and locate **ARR affinity**, and then change its status to **Off**.
+8. Click **Save**.
+
+#### Task 5: Deploy the application to a scaled web app
+
+1. Switch to the command prompt.
+2. To publish the service, run the following command:
+   ```bash
+    dotnet publish /p:PublishProfile=Azure /p:Configuration=Release
+   ```
+
+### Exercise 3: Test the Application
+
+#### Task 1: Run the application multiple times
+
+1. Open Microsoft Edge. 
+2. Browse to the following URL:
+   ```url
+    https://blueyondermod07lab3{YourIntials}.azurewebsites.net/api/flights
+   ```
+   >**Note**: Replace {YourInitials} with your name.
+3. On the top bar, click **Settings and more** or press Alt + X, and then select **Developer Tools**.
+4. In **Developer Tools**, click the **Network** tab.
+5. Go to the following URL:
+    ```url
+    https://blueyondermod07lab3{YourInitials}.azurewebsites.net/api/flights
+    ```
+6. View the response with all the flights.
+7. In the **Network** tab, locate the URL, and then select it.
+8. In the **Response Headers** section, locate **X-BlueYonder-Server**, and then check the server name.
+
+
+#### Task 2: Verify you are accessing multiple instances
+
+Refresh the page twice, and then verify that the **X-BlueYonder-Server** header has changed.
+
+#### Task 3: Verify you are getting the cached data
+
+1. Go to the following URL:
+   ```url
+    https://blueyondermod07lab3{YourInitials}.azurewebsites.net/api/flights/New York/Paris/MM-DD-YYYY
+   ```
+2. Replace the end of the URL with the current date.
+3. In the **Network** tab, locate the URL, and then select it.
+4. In the **Response Headers** section, locate the **X-Cache** header.
+   >**Note**: If the header is missing, it means that the result is not cached.
+5. If the **X-Cache** header is missing, to get the header, refresh the page.
+6. Refresh the page twice, and verify that the **X-BlueYonder-Server** header has changed and that the result are cached.
+
+©2018 Microsoft Corporation. All rights reserved.
+
+The text in this document is available under the [Creative Commons Attribution 3.0 License](https://creativecommons.org/licenses/by/3.0/legalcode), additional terms may apply. All other content contained in this document (including, without limitation, trademarks, logos, images, etc.) are **not** included within the Creative Commons license grant. This document does not provide you with any legal rights to any intellectual property in any Microsoft product. You may copy and use this document for your internal, reference purposes.
+
+This document is provided &quot;as-is.&quot; Information and views expressed in this document, including URL and other Internet Web site references, may change without notice. You bear the risk of using it. Some examples are for illustration only and are fictitious. No real association is intended or inferred. Microsoft makes no warranties, express or implied, with respect to the information provided here.

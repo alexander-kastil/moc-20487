@@ -1,0 +1,62 @@
+db.orders.insertMany([
+    {
+      name: "Order 1",
+      customerId: "1",
+      price: 100,
+      quantity: 3
+    },
+    {
+      name: "Order 2",
+      customerId: "1",
+      price: 35,
+      quantity: 2
+    },
+    {
+      name: "Order 3",
+      customerId: "2",
+      price: 50,
+      quantity: 1
+    },
+    {
+      name: "Order 4",
+      customerId: "3",
+      price: 10,
+      quantity: 10
+    },
+    {
+      name: "Order 5",
+      customerId: "3",
+      price: 500,
+      quantity: 1
+    },
+    {
+      name: "Order 6",
+      customerId: "4",
+      price: 175,
+      quantity: 5
+    },
+    {
+      name: "Order 7",
+      customerId: "4",
+      price: 5,
+      quantity: 100
+    },
+    {
+      name: "Order 8",
+      customerId: "5",
+      price: 1000,
+      quantity: 1
+    },
+    {
+      name: "Order 9",
+      customerId: "5",
+      price: 150,
+      quantity: 1
+    },
+    {
+      name: "Order 10",
+      customerId: "5",
+      price: 25,
+      quantity: 5
+    }
+    ])
