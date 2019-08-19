@@ -196,7 +196,7 @@
     ))
     ```
 
-    > Note: Make sure your test your solution locally befoe deploying it. Sample Connection String for SQL Express: `"Server=.\SQLEXPRESS;Database=DBNAME;Trusted_Connection=True;"`
+    > Note: Make sure you test your solution locally before deploying it. Sample Connection String for SQL Express: `"Server=.\SQLEXPRESS;Database=DBNAME;Trusted_Connection=True;"`
 
 #### Task 2: Deploy the web application to the Azure Web App
 
