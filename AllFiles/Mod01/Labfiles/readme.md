@@ -235,14 +235,15 @@
 
 1. Open **PowerShell**.
 2. To add a flight to the database, paste the following command:
+
    ```bash
-   $postParams = "{'origin': 'Germany',
-       'destination': 'France',
-       'flightNumber': 'GF7625',
-       'departureTime': '0001-01-01T00:00:00'}"
+   $postParams = '{"id":1,"origin":"VIE","destination":"MUC","flightNumber":"abc","departureTime":"2019-08-19T00:00:00"}'
+
    Invoke-WebRequest -Uri http://flightsmod1lab{YourInitials}.azurewebsites.net/api/flights -ContentType "application/json" -Method POST -Body $postParams
    ```
+
    > **Note**: If there is an error, try to run the following command **[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12**, and then try again.
+
 3. Open Microsoft Edge.
 4. Browse to the following url:
    ```
@@ -253,10 +254,10 @@
    [
      {
        id: 1,
-       origin: "Germany",
-       destination: "France",
+       origin: "VIE",
+       destination: "MUC",
        flightNumber: "GF7625",
-       departureTime: "0001-01-01T00:00:00"
+       departureTime: "2019-08-19T00:00:00"
      }
    ];
    ```

@@ -84,14 +84,14 @@ namespace Vouchers {
             // For specific URL ie. your Angular CLI Frontend use: 
             // corsBuilder.WithOrigins("http://localhost:4200")           
 
-            services.AddCors (options => {
-                options.AddPolicy ("AllowAll",
-                    builder => builder.AllowAnyOrigin ()
-                    .AllowAnyMethod ()
-                    .AllowAnyHeader ()
-                    .AllowAnyOrigin ()
-                    .AllowCredentials ());
-            });
+            // services.AddCors (options => {
+            //     options.AddPolicy ("AllowAll",
+            //         builder => builder.AllowAnyOrigin ()
+            //         .AllowAnyMethod ()
+            //         .AllowAnyHeader ()
+            //         .AllowAnyOrigin ()
+            //         .AllowCredentials ());
+            // });
 
             //Serialization Options
             services.AddMvc ().AddJsonOptions (ser => {
@@ -133,12 +133,13 @@ namespace Vouchers {
             }
 
             //Cors
-            app.UseCors ("AllowAll");
+            // app.UseCors ("AllowAll");
 
             //Auth
             // app.UseAuthentication();
 
             app.UseMvc ();
+
         }
     }
 }

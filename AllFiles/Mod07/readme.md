@@ -1,6 +1,6 @@
 # Cosmos DB
 
-[Local Emulator](https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator)
+[Local Emulator](https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator1)
 
 [Data Import](https://docs.microsoft.com/en-us/azure/cosmos-db/import-data)
 
