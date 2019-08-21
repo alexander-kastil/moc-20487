@@ -4,4 +4,8 @@
 
 [Data Import](https://docs.microsoft.com/en-us/azure/cosmos-db/import-data)
 
-[Cosmos DB SQL Learning Site](https://www.documentdb.com/sql/demo)
+[Cosmos DB - SQL Learning Site](https://www.documentdb.com/sql/demo)
+
+[Mongo DB - Introduction](https://docs.mongodb.com/manual/tutorial/query-documents/)
+
+[Gremlin Reference](https://docs.microsoft.com/en-us/azure/cosmos-db/gremlin-support)
